@@ -31,7 +31,7 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
-		st.subheader("Opeartion:")
+		st.subheader("Data Check and Phenotype Allocation")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
 			
@@ -77,7 +77,7 @@ def main():
 
 
 
-		if st.button("Check1"):
+		if st.button("Confirm Phenotype Allocation"):
 			st.text(phenotypes)
 			# cross-tabulation of study_arm and Phenotype
 			print('\n=== study_arm X Phenotype ===')
@@ -88,39 +88,7 @@ def main():
 
 		
 		if st.button("Check2"):
-			if data_file is not None:
-
-				if data_file.type == "text/csv":
-					df = pd.read_csv(data_file)
-				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-					df = pd.read_excel(data_file, sheet_name=0)
-
-				st.dataframe(df.head())
-			
-			missing_cols = np.setdiff1d(cols, df.columns)
-			if len(missing_cols)>0:
-				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
-			else:
-				st.text(f'Column name OK')
-				st.text(f'N of original data entries:{df.shape[0]}')
-				x1 = df[pd.notna(df.sample_id)].copy()
-				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
-				
-				sample_id_dup =  x1.sample_id[x1.sample_id.duplicated()].unique()
-				if len(sample_id_dup)>0:
-					st.text(f'Duplicated sample_id:{sample_id_dup}')
-					st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
-				
-				if sum(pd.isna(x1.clinical_id))>0:
-					st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
-					st.error('All sample must have clinical ID (can be same as the sample ID)')
-					
-			
-			  # study_arm and Phenotype
-				nmiss_study_arm = sum(pd.isna(x1.study_arm))
-				if nmiss_study_arm>0: # fill na
-					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
-					x1['study_arm'] = x1.study_arm.fillna('Unknown')
+			st.text(df.head())
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
