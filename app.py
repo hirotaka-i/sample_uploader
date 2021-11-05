@@ -149,7 +149,7 @@ def main():
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
-		st.text(df.race.value_counts())
+		st.text(df.race_for_qc.value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
 
@@ -179,7 +179,7 @@ def main():
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
-		st.text(df.family_history.value_counts())
+		st.text(df.family_history_for_qc.value_counts())
 		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
 
@@ -210,7 +210,7 @@ def main():
 
 		# region for qc
 		st.subheader('Create "region_for_qc"')
-		st.text(df.region.value_counts())
+		st.text(df.region_for_qc.value_counts())
 		regions = df.region.dropna().unique()
 		nmiss = sum(pd.isna(df.region))
 		if nmiss>0:
