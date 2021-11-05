@@ -86,7 +86,7 @@ def main():
 				xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
-			# race standardization
+			# race for qc
 			st.info('Counts by race')
 			st.text(df.race.value_counts())
 			races = df.race.dropna().unique()
@@ -102,16 +102,33 @@ def main():
 				"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
 			df['race_for_qc'] = df.race_for_qc.map(mapdic)
 
-			if st.button("Confirm Race for QC"):
+			# family history for qc
+			st.info('Counts by family_history')
+			st.text(df.family_history.value_counts())
+			family_historys = df.family_history.dropna().unique()
+			nmiss = sum(pd.isna(df.family_history))
+			if nmiss>0:
+				st.text(f'{nmiss} entries missing family_history')
+				df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
+			
+			mapdic = {'Not Reported':'Not Reported'}
+			n_fhs = st.columns(len(family_historys))
+			for i, x in enumerate(n_fhs):
+				with x:
+					fh = n_fhs[i]
+					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
+			df['family_history_for_qc'] = df.family_history_for_qc.map(phenotypes)
+
+			if st.button("Confirm Family History for QC"):
 				# cross-tabulation of study_arm and Phenotype
-				st.text('=== race_for_qc X race ===')
-				df['race'] = df.race.fillna('Missing')
-				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
+				st.text('=== family_history_for_qc X family_history ===')
+				df['family_history'] = df.family_history.fillna('_Missing')
+				xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 
 			if st.button("Plate check"):
-				df['Plate_name'] = df.Plate_name.fillna('Missing')
+				df['Plate_name'] = df.Plate_name.fillna('_Missing')
 				xtab = df.pivot_table(index='Plate_name', 
 									columns='study_arm', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
@@ -127,11 +144,9 @@ def main():
 						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 						if len(dup_pos)>0:
 							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
-
-				
 				
 			if st.button('Age distribution check'):
-				st.text('building')
+				
 			
 			
 			if st.button("Check2"):
