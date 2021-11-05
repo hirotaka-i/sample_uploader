@@ -168,7 +168,7 @@ def main():
 					# fig, ax = plt.suplots()
 					# ax.hist(df[v])
 					# st.pyplot(fig)
-                    st.text('need work')
+					st.text('need work')
 				
 			if st.button('Age distribution check'):
 				st.text('test')
