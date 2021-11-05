@@ -131,11 +131,10 @@ def main():
 				sex = sexes[i]
 				mapdic[sex]=x.selectbox(f"[{sex}]: For QC, please pick the Phenotype below", 
 									["Male", "Female", "Intersex", "Unknown", "Other", "Not Reported"], key=i)
-		df['sex_for_qc'] = df.sex.fillna('Not Reported').replace(mapdic)
+		df['sex_for_qc'] = df.sex.replace(mapdic)
 
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== sex_for_qc x sex ===')
-		df['sex']=df.sex.fillna('_Missing')
 		xtab = df.pivot_table(index='sex_for_qc', columns='sex', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
