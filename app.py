@@ -89,13 +89,12 @@ def main():
 			if nmiss>0:
 				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
 				df['race2'] = df.race.fillna('Not Reported')
+			
 			mapdic = {'Not Reported':'Not Reported'}
-			st.text(df.race.value_counts(dropna=False))
-
 			for i, x in enumerate(n_races):
 				with x:
 					race = races[i]
-					mapdic[arm]=x.selectbox(f"Select the best match for [{race}]",
+					mapdic[race]=x.selectbox(f"Select the best match for [{race}]",
 					["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
 			df['race2'] = df.race.map(mapdic)
@@ -110,7 +109,7 @@ def main():
 			if st.button("Confirm Race assignments"):
 				# cross-tabulation of study_arm and Phenotype
 				st.text('=== race2 X race ===')
-				df['race'] = df.race.fillna('Not Reported')
+				# df['race'] = df.race.fillna('Not Reported')
 				xtab = df.pivot_table(index='race2', columns='race', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
