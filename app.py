@@ -1,10 +1,10 @@
 import streamlit as st
-import matplotlib.pyplot as plt
+import streamlit.components.v1 as stc
 
 # File Processing Pkgs
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
