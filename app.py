@@ -11,8 +11,7 @@ cols = ['study', 'sample_id', 'sample_type',
 		'Plate_name', 'Plate_position', 'clinical_id', 
 		'study_arm', 'sex', 'race', 
 		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
-		'region', 'comment', 'alternative_id1', 'alternative_id2', 
-		'Phenotype','Genotyping_site', 'Sample_submitter', 'original_manifest']
+		'region', 'comment', 'alternative_id1', 'alternative_id2']
 
 
 @st.cache
