@@ -54,8 +54,11 @@ def main():
 			if df_non_miss_check.isna().sum().sum()>0:
 				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
 				st.text(df_non_miss_check.info())
-
-
+			else:
+				st.text(f'Column name OK, required columns are non-missing')
+				st.text(f'N of original data entries:{df.shape[0]}')
+				x1 = df[pd.notna(df.sample_id)].copy()
+				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
 
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
@@ -70,14 +73,6 @@ def main():
 		if st.button("Check1"):
 			st.text(phenotypes)
 
-
-			else:
-				st.text(f'Column name OK')
-				st.text(f'N of original data entries:{df.shape[0]}')
-				x1 = df[pd.notna(df.sample_id)].copy()
-				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
-			
-			# 
 			sample_id_dup =  x1.sample_id[x1.sample_id.duplicated()].unique()
 			if len(sample_id_dup)>0:
 				st.text(f'Duplicated sample_id:{sample_id_dup}')
