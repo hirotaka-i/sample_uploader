@@ -106,7 +106,7 @@ def main():
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} entries missing race...')
-				df['race_for_qc'] = df.race.fillna('Not Reported')
+				df['race_for_qc'] = df.race.astype('str').fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
 			for race in races:
@@ -117,7 +117,7 @@ def main():
 			
 			# cross-tabulation of study_arm and Phenotype
 			st.text('=== race_for_qc X race ===')
-			df['race'] = df.race.fillna('_Missing')
+			df['race'] = df.race.astype('str').fillna('_Missing')
 			xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
@@ -130,7 +130,7 @@ def main():
 			nmiss = sum(pd.isna(df.family_history))
 			if nmiss>0:
 				st.text(f'{nmiss} entries missing family_history')
-				df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
+				df['family_history_for_qc'] = df.family_history.astype('str').fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
 
@@ -144,14 +144,14 @@ def main():
 			
 			# cross-tabulation of study_arm and Phenotype
 			st.text('=== family_history_for_qc X family_history ===')
-			df['family_history'] = df.family_history.fillna('_Missing')
+			df['family_history'] = df.family_history.astype('str').fillna('_Missing')
 			xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
 
 			# Plate Info
 			st.subheader('Plate Info')
-			df['Plate_name'] = df.Plate_name.fillna('_Missing')
+			df['Plate_name'] = df.Plate_name.astype('str').fillna('_Missing')
 			xtab = df.pivot_table(index='Plate_name', 
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
@@ -161,7 +161,7 @@ def main():
 				df_plate = df[df.Plate_name==plate].copy()
 				df_plate_pos = df_plate.Plate_position
 				# duplicated position check
-				if plate!='Missing':
+				if plate!='_Missing':
 					if len(df_plate_pos)>96:
 						st.error('Please make sure, N of samples on plate [{plate}] is =<96')
 						flag=1
@@ -192,7 +192,7 @@ def main():
 						elif nuniq==1:
 							st.text(f'{v} - One value = {vuniq[0]}, ({nmiss} entries missing)')
 						elif nuniq <6:
-							st.write(df[v].fillna('_Missing').value_counts())
+							st.write(df[v].value_counts(dropna=False))
 						else:
 							st.text(f'{v} - histgram ({nmiss} entries missing)')
 							hist_values=np.histogram(df[v].dropna())[0]
