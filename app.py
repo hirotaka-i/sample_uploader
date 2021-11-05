@@ -180,7 +180,7 @@ def main():
 					elif nuniq <6:
 						st.write(df[v].fillna('_Missing').value_counts)
 					else:
-                        st.text(f'{v} - histgram')
+						st.text(f'{v} - histgram')
 						hist_values=np.histogram(df[v])[0]
 						st.bar_chart(hist_values, )
 
