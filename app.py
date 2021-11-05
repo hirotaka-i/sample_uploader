@@ -42,7 +42,7 @@ def main():
 			
 			missing_cols = np.setdiff1d(cols, df.columns)
 			if len(missing_cols)>0:
-				st.info(f'{missing_cols} are missing. \nPlease use the template sheet')
+				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
 			else:
 				st.text(f'Column name OK')
 				st.text(f'N of original data entries:{df.shape[0]}')
@@ -52,10 +52,10 @@ def main():
 				sample_id_dup =  x1.sample_id[x1.sample_id.duplicated()].unique()
 				if len(sample_id_dup)>0:
 					st.text(f'Duplicated sample_id:{sample_id_dup}')
-					st.info(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+					st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
 				
 				if sum(pd.isna(x1.clinical_id))>0:
-					st.info('All sample must have clinical ID (can be same as the sample ID')
+					st.error('All sample must have clinical ID (can be same as the sample ID')
 					st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
 			
 			  # study_arm and Phenotype
