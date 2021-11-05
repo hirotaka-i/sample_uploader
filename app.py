@@ -42,7 +42,7 @@ def main():
 	flag=0
 	ph_conf=''
 	sex_conf=''
-		=''
+	race_conf = st.text_input('Input [R] to confirm the above assignemnts')	=''
 	fh_conf=''
 	cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
@@ -141,7 +141,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 		
-			 = st.text_input('Input [R] to confirm the above assignemnts')
+		race_conf = st.text_input('Input [R] to confirm the above assignemnts')
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
