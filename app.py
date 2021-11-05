@@ -200,9 +200,17 @@ def main():
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
-			df['Submitter'] = Submitter
-			
-			st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+			if Submitter:
+				df['Submitter'] = Submitter
+			else:
+				st.error('Please input the submitter info')
+
+
+			if st.button("Finished?"):
+				if flag==0:
+					st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+				else:
+					st.error('Please resolve all errors')
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
