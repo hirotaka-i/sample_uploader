@@ -69,8 +69,11 @@ def main():
 				st.text(x1.study_arm.value_counts())
 				arms=x1.study_arm.unique()
 				n_arms = st.columns(len(arms))
+				phenotypes={}
 				for i, x in enumerate(n_arms):
-					x.selectbox(f"Allocate phenotype for {arms[i]}",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
+					arm = arms[i]
+					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
+                st.write(phenotypes)
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
