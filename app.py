@@ -7,16 +7,6 @@ import numpy as np
 import base64
 import datetime as dt
 # import matplotlib.pyplot as plt # don't work...
-
-cols = ['study', 'sample_id', 'sample_type',
-		'DNA_volume', 'DNA_conc', 'r260_280',
-		'Plate_name', 'Plate_position', 'clinical_id', 
-		'study_arm', 'sex', 'race', 
-		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
-		'region', 'comment', 'alternative_id1', 'alternative_id2']
-required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
-fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
-
 today = dt.datetime.today()
 version = f'{today.year}{today.month}{today.day}'
 
@@ -54,6 +44,14 @@ def main():
 	sex_conf=0
 	race_conf=0
 	fh_conf=0
+	cols = ['study', 'sample_id', 'sample_type',
+		'DNA_volume', 'DNA_conc', 'r260_280',
+		'Plate_name', 'Plate_position', 'clinical_id', 
+		'study_arm', 'sex', 'race', 
+		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
+		'region', 'comment', 'alternative_id1', 'alternative_id2']
+	required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
+	fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
 	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 	
 
