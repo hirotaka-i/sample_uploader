@@ -37,7 +37,7 @@ def main():
 			file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 			df = read_file(data_file)
 			st.text('Counts by study_arm')
-			st.text(x1.study_arm.value_counts())
+			st.text(df.study_arm.value_counts())
 		if st.button("Check1"):
 			st.write(file_details)
 			st.dataframe(df.head())
