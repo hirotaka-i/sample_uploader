@@ -177,11 +177,12 @@ def main():
 						st.text(f'{v} - missing')
 					elif nuniq==1:
 						st.text(f'{v} - one value - {vuniq[0]}')
-					elif nuniq <5:
+					elif nuniq <6:
 						st.write(df[v].fillna('_Missing').value_counts)
 					else:
+                        st.text(f'{v} - histgram')
 						hist_values=np.histogram(df[v])[0]
-						st.bar_chart(hist_values)
+						st.bar_chart(hist_values, )
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
