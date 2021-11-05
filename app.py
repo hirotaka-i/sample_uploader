@@ -30,6 +30,7 @@ def main():
 	st.title("GP2 sample manifest checker")
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
+	flag=0
 	if choice in menu[:2]:
 		st.header("Data Check and self-QC")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
@@ -47,18 +48,21 @@ def main():
 			missing_cols = np.setdiff1d(cols, df.columns)
 			if len(missing_cols)>0:
 				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
+				flag=1
 
 			# required columns checks
 			elif df_non_miss_check.isna().sum().sum()>0:
 				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
 				st.text('First ~30 columns with missing data in any required fields')
 				st.write(df_non_miss_check[df_non_miss_check.isna().sum(1)>0].head(20))
+				flag=1
 
 			# sample dup check
 			elif len(sample_id_dup)>0:
 				sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
 				st.text(f'Duplicated sample_id:{sample_id_dup}')
 				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+				flag=1
 			else:
 				st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
 				st.text(f'N of sample_id (entries):{df.shape[0]}')
@@ -140,18 +144,19 @@ def main():
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
-			
-			if st.button("Plate check"):
-				for plate in df.Plate_name.unique():
-					df_plate = df[df.Plate_name==plate].copy()
-					df_plate_pos = df_plate.Plate_position
-					# duplicated position check
-					if plate!='Missing':
-						if len(df_plate_pos)>11:
-							st.error('Please make sure, N of samples on each plate are =<96')
-						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
-						if len(dup_pos)>0:
-							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
+
+			for plate in df.Plate_name.unique():
+				df_plate = df[df.Plate_name==plate].copy()
+				df_plate_pos = df_plate.Plate_position
+				# duplicated position check
+				if plate!='Missing':
+					if len(df_plate_pos)>11:
+						st.error('Please make sure, N of samples on each plate are =<96')
+						flag=1
+					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
+					if len(dup_pos)>0:
+						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
+						flag=1
 
 			# Numeric values
 			st.subheader('Numeric Values')
