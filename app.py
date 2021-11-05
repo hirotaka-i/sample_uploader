@@ -310,7 +310,7 @@ def main():
 			else:
 				st.markdown(get_table_download_link(df), unsafe_allow_html=True)
 
-
+# git add app.py;git commit -m "debug";git push -u origin main
 
 if __name__ == '__main__':
 	main()
