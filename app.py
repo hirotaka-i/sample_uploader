@@ -200,7 +200,7 @@ def main():
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
-            df['Submitter'] = Submitter
+			df['Submitter'] = Submitter
 
 			if st.button("Finished?"):
 				if not Submitter:
