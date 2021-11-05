@@ -80,14 +80,13 @@ def main():
 					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-			# # race standardization
+			# race standardization
+			races = df.race.unique().dropna()
+			nmiss = sum(pd.isna(df.race))
+			if nmiss>0:
+				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
+				df['race'] = df.fillna('Not Reported')
 			# st.text('Counts by race')
-			# races = df.race.unique().dropna()
-			# nmiss = sum(pd.isna(df.race))
-			# if nmiss>0:
-			# 	st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-			# 	df['race'] = df.fillna('Not Reported')
-			
 			# st.text(df.race.value_counts())
 			
 			# mapdic = {'Not Reported':'Not Reported'}
