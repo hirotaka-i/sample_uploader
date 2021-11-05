@@ -51,9 +51,11 @@ def main():
 		
 		# read a file
 		df = read_file(data_file)
-		df_non_miss_check = df[['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']].copy()
+		required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
 		if choice=='For Fulgent':
-			df_non_miss_check = df_non_miss_check + ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
+			required_cols = required_cols + ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
+		st.text(f'Required: {required_cols}')
+		df_non_miss_check = df[required_cols].copy()
 		sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
 		
 		# missing check
