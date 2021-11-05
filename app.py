@@ -83,14 +83,14 @@ def main():
 			# study_arm --> Phenotype
 			st.subheader('Counts by study_arm')
 			st.text(df.study_arm.value_counts())
-			arms=df.study_arm.dropna().unique()
+			arms=df.study_arm.dropna().unique().astype('str')
 			n_arms = st.columns(len(arms))
 			phenotypes={}
 			for i, x in enumerate(n_arms):
 				with x:
 					arm = arms[i]
 					phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
-			df['Phenotype'] = df.study_arm.map(phenotypes)
+			df['Phenotype'] = df.study_arm.astype('str').map(phenotypes)
 
 			# cross-tabulation of study_arm and Phenotype
 			st.text('=== Phenotype x study_arm===')
@@ -102,7 +102,7 @@ def main():
 			# race for qc
 			st.subheader('Create "race_for_qc"')
 			st.text(df.race.value_counts())
-			races = df.race.dropna().unique()
+			races = df.race.dropna().unique().astype('str')
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} entries missing race...')
