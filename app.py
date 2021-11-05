@@ -88,7 +88,7 @@ def main():
 				st.text(xtab)
 			# race standardization
 			st.info('Counts by race')
-			st.text(df.race.	counts())
+			st.text(df.race.value_counts())
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
