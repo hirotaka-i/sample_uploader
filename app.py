@@ -251,7 +251,7 @@ def main():
 						st.bar_chart(hist_values, )
 
 		# Sample Submitter
-        st.subheader('Sample Submitter')
+		st.subheader('Sample Submitter')
 		Submitter = st.text_input('First name initial + ". (dot&space)" + last name" (e.g.- H. Morris)')
 		df['Submitter'] = Submitter
 
