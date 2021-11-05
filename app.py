@@ -37,7 +37,7 @@ def get_table_download_link(df):
 
 
 def main():
-	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
+	menu = ["For Fulgent", "For NIH"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	flag=0
 	ph_conf=''
@@ -71,6 +71,7 @@ def main():
 		df['race_for_qc'] = df.race.fillna('Not Reported')
 		df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
 		df['region_for_qc'] = df.region.fillna('Not Reported')
+		df['genotyping_site'] = choice.replace('For ', '')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
 		df_non_miss_check = df[required_cols].copy()
