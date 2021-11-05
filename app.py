@@ -230,6 +230,7 @@ def main():
 
 		if st.button("Finished?"):
 			st.text("If everything is good, you will see the download link for the qced data")
+            st.text((ph_conf + race_conf + sex_conf + fh_conf))
 			if not Submitter:
 				st.error('Have you input the submitter?')
 			elif flag==0:
