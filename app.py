@@ -31,13 +31,13 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
-		st.subheader("Data Check and Phenotype Allocation")
+		st.subheader("Data Check and self-QC")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
 			
-			# for debug purpose. can be removed
-			file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
-			st.write(file_details)
+			# for debug purpose. get the file detail
+			# file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
+			# st.write(file_details)
 			
 			# read a file
 			df = read_file(data_file)
@@ -70,7 +70,7 @@ def main():
 
 			# study_arm --> Phenotype
 			st.info('Counts by study_arm')
-			st.text(df.study_arm.value_counts())
+			st.text(df.study_arm.	counts())
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
 			phenotypes={}
@@ -88,7 +88,7 @@ def main():
 				st.text(xtab)
 			# race standardization
 			st.info('Counts by race')
-			st.text(df.race.value_counts())
+			st.text(df.race.	counts())
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
@@ -111,8 +111,12 @@ def main():
 				st.text(xtab)
 
 			if st.button("Plate check"):
-				st.info('Please make sure, N of samples on each plate are =<96')
 				df['Plate_name'] = df.Plate_name.fillna('Missing')
+				xtab = df.pivot_table(index='Plate_name', 
+									columns='study_arm', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+				st.write(xtab)
+				
 				for plate in df.Plate_name.unique():
 					df_plate = df[df.Plate_name==plate].copy()
 					df_plate_pos = df_plate.Plate_position
@@ -121,12 +125,8 @@ def main():
 						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 						if len(dup_pos)>0:
 							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
-						
-				xtab = df.pivot_table(index='Plate_name', 
-									columns='study_arm', margins=True,
-									values='sample_id', aggfunc='count', fill_value=0)
-				st.write(xtab)
-			
+				st.info('Please make sure, N of samples on each plate are =<96')
+				
 			if st.button('Age distribution check'):
 				st.text('building')
 			
