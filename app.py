@@ -115,7 +115,8 @@ def main():
 		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
-        ph_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+		
+		ph_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -139,7 +140,7 @@ def main():
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
-        race_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+		race_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
@@ -167,7 +168,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-        fh_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+		fh_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# Plate Info
 		st.subheader('Plate Info')
