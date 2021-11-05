@@ -161,8 +161,9 @@ def main():
 		
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== race_for_qc X race ===')
-		df['race'] = df.race.fillna('_Missing')
-		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
+		dft = df.copy()
+		dft['race'] = dft.race.fillna('_Missing')
+		xtab = dft.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 		
@@ -192,7 +193,8 @@ def main():
 
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== family_history_for_qc X family_history ===')
-		df['family_history'] = df.family_history.fillna('_Missing')
+		dft = df.copy()
+		dft['family_history'] = dft.family_history.fillna('_Missing')
 		xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
@@ -203,14 +205,15 @@ def main():
 
 		# Plate Info
 		st.subheader('Plate Info')
-		df['Plate_name'] = df.Plate_name.fillna('_Missing')
-		xtab = df.pivot_table(index='Plate_name', 
+		dft = df.copy()
+		dft['Plate_name'] = dft.Plate_name.fillna('_Missing')
+		xtab = dft.pivot_table(index='Plate_name', 
 							columns='study_arm', margins=True,
 							values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		for plate in df.Plate_name.unique():
-			df_plate = df[df.Plate_name==plate].copy()
+		for plate in dft.Plate_name.unique():
+			df_plate = dft[dft.Plate_name==plate].copy()
 			df_plate_pos = df_plate.Plate_position
 			# duplicated position check
 			if plate!='_Missing':
