@@ -297,7 +297,7 @@ def main():
 		# Sample Submitter
 		st.subheader('Sample Submitter')
 		Submitter = st.text_input('First name initial + ". (dot&space)" + last name" (e.g.- H. Morris)')
-		df['Submitter'] = Submitter
+		df['Sample_submitter'] = Submitter
 
 		if st.button("Finished?"):
 			st.text("If everything is good, you will see the download link for the qced data")
