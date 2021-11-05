@@ -33,12 +33,14 @@ def main():
 	if choice in menu[:2]:
 		st.subheader("Opeartion:")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
+		if data_file is not None:
+			file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
+			df = read_file(data_file)
+			st.text('Counts by study_arm')
+			st.text(x1.study_arm.value_counts())
 		if st.button("Check1"):
-			if data_file is not None:
-				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
-				st.write(file_details)
-				df = read_file(data_file)
-				st.dataframe(df.head())
+			st.write(file_details)
+			st.dataframe(df.head())
 		
 		if st.button("Check2"):
 			if data_file is not None:
