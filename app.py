@@ -258,7 +258,7 @@ def main():
 		if st.button("Finished?"):
 			st.text("If everything is good, you will see the download link for the qced data")
 			if flag==1:
-				st.error('Please work on the data so that no errors observed (red comments)')
+				st.error('Some errors still exist (red comment). Please check the original data for missing etc')
 			elif not Submitter:
 				st.error('Have you input the submitter?')
 			elif not (ph_conf & sex_conf & race_conf & fh_conf):
