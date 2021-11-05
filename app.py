@@ -257,12 +257,12 @@ def main():
 
 		if st.button("Finished?"):
 			st.text("If everything is good, you will see the download link for the qced data")
-			if not Submitter:
+			if flag==1:
+				st.error('Please work on the data so that no errors observed (red comments)')
+			elif not Submitter:
 				st.error('Have you input the submitter?')
-			elif not (ph_conf & race_conf & fh_conf):
+			elif not (ph_conf & sex_conf & race_conf & fh_conf):
 				st.error('Forget to confirm?')
-			elif flag==1:
-				st.error('Please resolve all errors')
 			else:
 				st.markdown(get_table_download_link(df), unsafe_allow_html=True)
 
