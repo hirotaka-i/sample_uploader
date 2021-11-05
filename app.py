@@ -87,21 +87,14 @@ def main():
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-				df['race2'] = df.race.fillna('Not Reported')
+				df['race_for_qc'] = df.race.fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
-			# n_races = st.columns(len(races))
-			# for i, x in enumerate(n_races):
-			# 	with x:
-			# 		race = races[i]
-			# 		mapdic[race]=x.selectbox(f"Select the best match for [{race}]",
-			# 		["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
-			# 		"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
 			for race in races:
-				mapdic[race]=st.selectbox(f"Select the best match for [{race}]",
+				mapdic[race]=st.selectbox(f"[{race}]: For QC purppose, select the best match from the followings",
 				["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 				"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
-			df['race2'] = df.race2.map(mapdic)
+			df['race_for_qc'] = df.race_for_qc.map(mapdic)
 
 			if st.button("Confirm Phenotype Allocation"):
 				# cross-tabulation of study_arm and Phenotype
@@ -110,11 +103,11 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 
-			if st.button("Confirm Race assignments"):
+			if st.button("Confirm Race for QC"):
 				# cross-tabulation of study_arm and Phenotype
-				st.text('=== race2 X race ===')
+				st.text('=== race_for_qc X race ===')
 				df['race'] = df.race.fillna('Missing')
-				xtab = df.pivot_table(index='race2', columns='race', margins=True,
+				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 
