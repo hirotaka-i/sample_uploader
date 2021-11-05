@@ -61,8 +61,8 @@ def main():
 				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
 			else:
 				st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
-				st.text(f'N of sample_id:{df.shape[0]}')
-				st.text(f'N of unique clinical_id: {len(df.clinical_id.unique())}')
+				st.text(f'N of sample_id (entries):{df.shape[0]}')
+				st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
 			# study_arm
 			st.text('Counts by study_arm')
@@ -73,33 +73,18 @@ def main():
 			for i, x in enumerate(n_arms):
 				with x:
 					arm = arms[i]
-					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
+					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 
 
 
 		if st.button("Check1"):
 			st.text(phenotypes)
-
-
-			
-			if sum(pd.isna(x1.clinical_id))>0:
-				st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
-				st.error('All sample must have clinical ID (can be same as the sample ID)')
-
-			# study_arm and Phenotype
-			nmiss_study_arm = sum(pd.isna(x2.study_arm))
-			if nmiss_study_arm>0: # fill na
-				print('N of study_arm info missing --> recoded as Unknown:', nmiss_study_arm)
-				x2['study_arm'] = x2.study_arm.fillna('Unknown')
-			nmiss_Phenotype = sum(pd.isna(x2.Phenotype))
-			if nmiss_Phenotype>0: # fill na
-				print('N of Phenotype info missing --> recoded as "Not Reported":', nmiss_Phenotype)
-				x2['Phenotype']=x2.Phenotype.fillna("Not Reported")
 			# cross-tabulation of study_arm and Phenotype
 			print('\n=== study_arm X Phenotype ===')
-			xtab = x2.pivot_table(index='study_arm', columns='Phenotype', margins=True,
+            df['Phenotype'] = df.study_arm.map(phenotypes)
+			xtab = df.pivot_table(index='study_arm', columns='Phenotype', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
-			print(xtab)
+			st.text(xtab)
 			# undefined "Phenotype"
 			ph_er = np.setdiff1d(x2.Phenotype.astype('str'), ["PD", "Control", "Prodromal", "Other", "Not Reported"])
 			if len(ph_er)>0:
