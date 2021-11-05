@@ -52,14 +52,14 @@ def main():
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
 	required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
 	fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
-	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
+	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX) [Currently only CSV!]", type=['csv', 'xlsx'])
 	
 
-	st.title("GP2 sample manifest checker")
+	st.title("GP2 sample manifest self-QC web app")
 	st.text('This is a web app to self-check the sample manifest')
-	st.text('The template download from the below link')
+	st.text('The template download from the below link and go to "File"> "Download" as xlsx/csv')
 	st.write('https://docs.google.com/spreadsheets/d/1ThpUVBCRaPdDSiQiKZVwFpwWbW8mZxhqurv7-jBPrM4')
-	st.text('In the above link, go to "File"> "Download" (as xlsx/csv) ')
+	st.text('')
 	if data_file is not None:
 		st.header("Data Check and self-QC")
 		# for debug purpose. get the file detail
@@ -70,7 +70,6 @@ def main():
 		df = read_file(data_file)
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
-			st.text(f'Required for Fulgent: {fulgent_cols}')
 		df_non_miss_check = df[required_cols].copy()
 		sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 		
@@ -119,6 +118,30 @@ def main():
 		ph_conf = st.checkbox('Confirm Phenotype?')
 		if ph_conf:
 			st.info('Thank you')
+		
+
+		# sex for qc
+		st.subheader('Create "sex_for_qc"')
+		st.text(df.sex.value_counts())
+		sexes=df.sex.dropna().unique()
+		n_sexes = st.columns(len(sexes))
+		mapdic={}
+		for i, x in enumerate(n_sexes):
+			with x:
+				sex = sexes[i]
+				mapdic[sex]=x.selectbox(f"[{sex}]: For QC, please pick the Phenotype below", 
+									["Male", "Female", "Intersex", "Unknown", "Other", "Not Reported"], key=i)
+		df['sex_for_qc'] = df.sex.fillna('Not Reported').replace(mapdic)
+
+		# cross-tabulation of study_arm and Phenotype
+		st.text('=== Phenotype x study_arm===')
+		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
+								values='sample_id', aggfunc='count', fill_value=0)
+		st.text(xtab)
+		
+		ph_conf = st.checkbox('Confirm Phenotype?')
+		if ph_conf:
+			st.info('Thank you')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -133,7 +156,7 @@ def main():
 		for race in races:
 			mapdic[race]=st.selectbox(f"[{race}]: For QC purppose, select the best match from the followings",
 			["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
-			"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
+			"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown", "Not Reported"])
 		df['race_for_qc'] = df.race_for_qc.map(mapdic)
 		
 		# cross-tabulation of study_arm and Phenotype
