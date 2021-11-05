@@ -123,7 +123,7 @@ def main():
 					# duplicated position check
 					if plate!='Missing':
 						if len(df_plate_pos)>11:
-							st.info('Please make sure, N of samples on each plate are =<96')
+							st.error('Please make sure, N of samples on each plate are =<96')
 						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 						if len(dup_pos)>0:
 							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
