@@ -59,12 +59,12 @@ def main():
 			# missing check
 			missing_cols = np.setdiff1d(cols, df.columns)
 			if len(missing_cols)>0:
-				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
+				st.error(f'{missing_cols} are missing. Please use the template sheet')
 				flag=1
 
 			# required columns checks
 			elif df_non_miss_check.isna().sum().sum()>0:
-				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
+				st.error('There are some missing entries in the required columns. Please fill the missing cells ')
 				st.text('First ~30 columns with missing data in any required fields')
 				st.write(df_non_miss_check[df_non_miss_check.isna().sum(1)>0].head(20))
 				flag=1
@@ -73,7 +73,7 @@ def main():
 			elif len(sample_id_dup)>0:
 				sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
 				st.text(f'Duplicated sample_id:{sample_id_dup}')
-				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+				st.error(f'Unique sample IDs are required (clinical IDs can be duplicated if replicated)')
 				flag=1
 			else:
 				st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
@@ -167,7 +167,7 @@ def main():
 						flag=1
 					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 					if len(dup_pos)>0:
-						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
+						st.error(f' !!!SERIOUS ERROR!!!  Plate position duplicated position {dup_pos} on plate [{plate}]')
 						flag=1
 
 			# Numeric values
@@ -199,7 +199,7 @@ def main():
 						st.bar_chart(hist_values, )
 
 			# Sample Submitter
-			Submitter = st.text_input('Sample Submitter - "{First name initial}. {last name}" (e.g.- H. Morris)')
+			Submitter = st.text_input('Sample Submitter - First name initial + ". " + last name" (e.g.- H. Morris)')
 			df['Submitter'] = Submitter
 
 			if st.button("Finished?"):
