@@ -71,8 +71,9 @@ def main():
 				n_arms = st.columns(len(arms))
 				phenotypes={}
 				for i, x in enumerate(n_arms):
-					arm = arms[i]
-					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
+					with x:
+						arm = arms[i]
+						phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
 				st.text(phenotypes)
 
 
