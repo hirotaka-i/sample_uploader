@@ -20,17 +20,22 @@ def main():
 	if choice in menu[:2]:
 		st.subheader("Dataset")
 		data_file = st.file_uploader("Upload Sample Manifest (CSV/XLSX", type=['csv', 'xlsx'])
-		if st.button("Process"):
+		if st.button("Check"):
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
-				df = pd.read_csv(data_file)
+
+                if data_file.type == "text/csv":
+                    df = pd.read_csv(data_file)
+                elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                    df = pd.read_excel(data_file)
+
 				st.dataframe(df)
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
 		data_file = st.file_uploader("Upload Sample Manifest (CSV/XLSX", type=['csv', 'xlsx'])
-		if st.button("Process"):
+		if st.button("Check"):
 			if sm_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
