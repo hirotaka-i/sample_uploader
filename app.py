@@ -68,6 +68,9 @@ def main():
 		
 		# read a file
 		df = read_file(data_file)
+		df['race_for_qc'] = df.race.fillna('Not Reported')
+		df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
+		df['region_for_qc'] = df.region.fillna('Not Reported')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
 		df_non_miss_check = df[required_cols].copy()
@@ -148,9 +151,10 @@ def main():
 		st.text(df.race.value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
+
 		if nmiss>0:
 			st.text(f'{nmiss} entries missing race...')
-			df['race_for_qc'] = df.race.fillna('Not Reported')
+			
 		
 		mapdic = {'Not Reported':'Not Reported'}
 		for race in races:
@@ -177,10 +181,9 @@ def main():
 		st.text(df.family_history.value_counts())
 		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
+
 		if nmiss>0:
 			st.text(f'{nmiss} entries missing family_history')
-			df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
-		
 		mapdic = {'Not Reported':'Not Reported'}
 
 		if len(family_historys)>0:
@@ -211,7 +214,6 @@ def main():
 		nmiss = sum(pd.isna(df.region))
 		if nmiss>0:
 			st.text(f'{nmiss} entries missing for region')
-			df['region_for_qc'] = df.region.fillna('Not Reported')
 		
 		mapdic = {'Not Reported':'Not Reported'}
 
