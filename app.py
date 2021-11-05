@@ -171,7 +171,7 @@ def main():
 
 			if st.button("Check Distribution"):
 				for v in numerics_cols:
-					vuniq = df[v].dropna.unique()
+					vuniq = df[v].dropna().unique()
 					nuniq = len(vuniq)
 					if nuniq==0:
 						st.text(f'{v} - missing')
