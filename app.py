@@ -5,6 +5,16 @@ import streamlit.components.v1 as stc
 import pandas as pd
 
 
+
+cols = ['study', 'sample_id', 'sample_type',
+		'DNA_volume', 'DNA_conc', 'r260_280',
+		'Plate_name', 'Plate_position', 'clinical_id', 
+		'study_arm', 'sex', 'race', 
+		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
+		'region', 'comment', 'alternative_id1', 'alternative_id2', 
+		'Phenotype','Genotyping_site', 'Sample_submitter', 'original_manifest']
+
+
 @st.cache
 def load_image(image_file):
 	img = Image.open(image_file)
@@ -28,8 +38,11 @@ def main():
 					df = pd.read_csv(data_file)
 				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
 					df = pd.read_excel(data_file, sheet_name=0)
-				
-				st.dataframe(df)
+
+				st.dataframe(df.head())
+			
+			if df.columns != cols:
+				st.text('Please use the template')
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
