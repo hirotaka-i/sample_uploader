@@ -127,7 +127,7 @@ def main():
 					with x:
 						fh = family_historys[i]
 						mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
-			df['family_history_for_qc'] = df.family_history_for_qc.map(phenotypes)
+			df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
 
 			if st.button("Confirm Family History for QC"):
 				# cross-tabulation of study_arm and Phenotype
