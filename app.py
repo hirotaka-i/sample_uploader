@@ -159,7 +159,18 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					st.pyplot.hist(df[v])
+					with st.echo(code_location='below'):
+						import matplotlib.pyplot as plt
+
+						fig = plt.figure()
+						ax = fig.add_subplot(1,1,1)
+
+						ax.hist(df[v])
+
+						ax.set_xlabel("v")
+						ax.set_ylabel("Miles per gallon")
+
+						st.write(fig)
 				
 			if st.button('Age distribution check'):
 				st.text('test')
