@@ -44,8 +44,8 @@ def main():
 	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 	
 	if choice in menu[:2]:
-		
-		if data_file is not None:
+		st.test(choice)
+	if data_file is not None:
 			st.header("Data Check and self-QC")
 			# for debug purpose. get the file detail
 			# file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
@@ -209,10 +209,6 @@ def main():
 					st.markdown(get_table_download_link(df), unsafe_allow_html=True)
 				else:
 					st.error('Please resolve all errors')
-
-
-	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
-	# cols = st.columns(ncol)
 
 
 
