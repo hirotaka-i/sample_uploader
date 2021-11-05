@@ -45,7 +45,7 @@ def main():
 			st.text(df.study_arm.value_counts(dropna=False))
 
 			# required columns checks
-			df_non_miss_check = df[['sample_id', 'clinica_id', 'sex', 'study_arm']].copy()
+			df_non_miss_check = df[['study', 'sample_id', 'clinical_id', 'sex', 'study_arm']].copy()
 			if df_non_miss_check.isna().sum().sum()>0:
 				st.info('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
 				st.text(df_non_miss_check.info())
