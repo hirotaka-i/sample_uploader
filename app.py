@@ -41,25 +41,32 @@ def main():
 			
 			# read a file
 			df = read_file(data_file)
-			st.text('Counts by study_arm')
-			st.text(df.study_arm.value_counts(dropna=False))
-
+			df_non_miss_check = df[['study', 'sample_id', 'clinical_id', 'sex', 'study_arm']].copy()
+			sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
+			
 			# missing check
 			missing_cols = np.setdiff1d(cols, df.columns)
 			if len(missing_cols)>0:
 				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
 
 			# required columns checks
-			df_non_miss_check = df[['study', 'sample_id', 'clinical_id', 'sex', 'study_arm']].copy()
-			if df_non_miss_check.isna().sum().sum()>0:
+			elif df_non_miss_check.isna().sum().sum()>0:
 				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
 				st.text(df_non_miss_check.info())
-			else:
-				st.text(f'Column name OK, required columns are non-missing')
-				st.text(f'N of original data entries:{df.shape[0]}')
-				x1 = df[pd.notna(df.sample_id)].copy()
-				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
 
+			# sample dup check
+			elif len(sample_id_dup)>0:
+				sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
+				st.text(f'Duplicated sample_id:{sample_id_dup}')
+				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+			else:
+				st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
+				st.text(f'N of sample_id:{df.shape[0]}')
+				st.text(f'N of unique clinical_id: {len(df.clinical_id.unique())}')
+
+			# study_arm
+			st.text('Counts by study_arm')
+			st.text(df.study_arm.value_counts())
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
 			phenotypes={}
@@ -73,10 +80,7 @@ def main():
 		if st.button("Check1"):
 			st.text(phenotypes)
 
-			sample_id_dup =  x1.sample_id[x1.sample_id.duplicated()].unique()
-			if len(sample_id_dup)>0:
-				st.text(f'Duplicated sample_id:{sample_id_dup}')
-				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+
 			
 			if sum(pd.isna(x1.clinical_id))>0:
 				st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
