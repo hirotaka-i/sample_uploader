@@ -199,7 +199,7 @@ def main():
 						st.bar_chart(hist_values, )
 
 			# Sample Submitter
-			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
+			Submitter = st.text_input('Sample Submitter - "{First name initial}. {last name}" (e.g.- H. Morris)')
 			df['Submitter'] = Submitter
 
 			if st.button("Finished?"):
