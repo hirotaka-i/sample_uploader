@@ -31,7 +31,7 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
-		st.subheader("Data Check and self-QC")
+		st.header("Data Check and self-QC")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
 			
@@ -69,7 +69,7 @@ def main():
 			df['Submitter'] = Submitter
 
 			# study_arm --> Phenotype
-			st.info('Counts by study_arm')
+			st.subheader('Counts by study_arm')
 			st.text(df.study_arm.value_counts())
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
@@ -87,7 +87,7 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 			# race for qc
-			st.info('Counts by race')
+			st.subheader('Counts by race')
 			st.text(df.race.value_counts())
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
