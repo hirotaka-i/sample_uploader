@@ -37,7 +37,7 @@ def main():
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
-				df = read_file(file_details)
+				df = read_file(data_file)
 				st.dataframe(df.head())
 		
 		if st.button("Check2"):
