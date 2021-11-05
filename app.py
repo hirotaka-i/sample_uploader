@@ -68,8 +68,8 @@ def main():
 				st.text('Counts by study_arm')
 				st.text(x1.study_arm.value_counts())
 				phenotypes=x1.study_arm.unique()
-				cols = st.columns(len(phenotypes))
-				for i, x in enumerate(cols):
+				n_phenotypes = st.columns(len(phenotypes))
+				for i, x in enumerate(n_phenotypes):
 					x.selectbox(f"Input # {i}",['PD', 'Control', 'Prodromal', 'Other'], key=i)
 
 
