@@ -41,8 +41,11 @@ def main():
 
 				st.dataframe(df.head())
 			
-			if df.columns != cols:
-				st.text('Please use the template')
+			missing_cols = np.setdiff1d(cols, df.columns)
+			if len(missing_cols)>0:
+				st.text(f'{missing_cols} are missing. (Please use the template')
+			else:
+				st.text(f'Column Name Check OK')
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
