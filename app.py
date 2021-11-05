@@ -39,7 +39,7 @@ def main():
 
 				st.dataframe(df.head())
 		
-		elif st.button("Check2"):
+		if st.button("Check2"):
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
