@@ -101,14 +101,14 @@ def main():
 		# study_arm --> Phenotype
 		st.subheader('Create "Phenotype"')
 		st.text(df.study_arm.value_counts())
-		arms=df.study_arm.dropna().unique().astype('str')
+		arms=df.study_arm.dropna().unique()
 		n_arms = st.columns(len(arms))
 		phenotypes={}
 		for i, x in enumerate(n_arms):
 			with x:
 				arm = arms[i]
 				phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
-		df['Phenotype'] = df.study_arm.astype('str').map(phenotypes)
+		df['Phenotype'] = df.study_arm.map(phenotypes)
 
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== Phenotype x study_arm===')
@@ -123,11 +123,11 @@ def main():
 		# race for qc
 		st.subheader('Create "race_for_qc"')
 		st.text(df.race.value_counts())
-		races = df.race.dropna().unique().astype('str')
+		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
 		if nmiss>0:
 			st.text(f'{nmiss} entries missing race...')
-			df['race_for_qc'] = df.race.astype('str').fillna('Not Reported')
+			df['race_for_qc'] = df.race..fillna('Not Reported')
 		
 		mapdic = {'Not Reported':'Not Reported'}
 		for race in races:
@@ -138,7 +138,7 @@ def main():
 		
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== race_for_qc X race ===')
-		df['race'] = df.race.astype('str').fillna('_Missing')
+		df['race'] = df.race.fillna('_Missing')
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
@@ -180,7 +180,7 @@ def main():
 
 		# Plate Info
 		st.subheader('Plate Info')
-		df['Plate_name'] = df.Plate_name.astype('str').fillna('_Missing')
+		df['Plate_name'] = df.Plate_name.fillna('_Missing')
 		xtab = df.pivot_table(index='Plate_name', 
 							columns='study_arm', margins=True,
 							values='sample_id', aggfunc='count', fill_value=0)
