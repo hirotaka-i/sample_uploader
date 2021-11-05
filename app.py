@@ -19,7 +19,15 @@ def read_file(data_file):
 	elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
 		df = pd.read_excel(data_file, sheet_name=0)
 	return (df)
-
+def get_table_download_link(df):
+	"""Generates a link allowing the data in a given panda dataframe to be downloaded
+	in:  dataframe
+	out: href string
+	"""
+	csv = df.to_csv(index=False)
+	b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+	href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
+	
 @st.cache
 def load_image(image_file):
 	img = Image.open(image_file)
@@ -163,11 +171,14 @@ def main():
 			# Numeric values
 			st.subheader('Numeric Values')
 			numerics_cols = ['DNA_volume', 'DNA_conc', 'r260_280','age', 'age_of_onset', 'age_at_diagnosis']
+			flag2 = 0
 			for v in numerics_cols:
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
-				else:
-					st.text(f'{v} is numeric')
+					flag=1
+					flag2=1
+			if flag2==0:
+				st.text('Numeric chek --> OK. Check the distribution with the below button')
 
 			if st.button("Check Distribution"):
 				for v in numerics_cols:
@@ -188,7 +199,8 @@ def main():
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
 			df['Submitter'] = Submitter
-
+			
+			st.markdown(get_table_download_link(df), unsafe_allow_html=True)
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
