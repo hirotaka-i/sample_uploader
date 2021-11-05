@@ -1,5 +1,5 @@
 import streamlit as st
-import streamlit.components.v1 as stc
+import matplotlib.pyplot as plt
 
 # File Processing Pkgs
 import pandas as pd
@@ -159,18 +159,9 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					with st.echo(code_location='below'):
-						import matplotlib.pyplot as plt
-
-						fig = plt.figure()
-						ax = fig.add_subplot(1,1,1)
-
-						ax.hist(df[v])
-
-						ax.set_xlabel("v")
-						ax.set_ylabel("Miles per gallon")
-
-						st.write(fig)
+					fig, ax = plt.suplots()
+					ax.hist(df[v])
+					st.pyplot(fig)
 				
 			if st.button('Age distribution check'):
 				st.text('test')
