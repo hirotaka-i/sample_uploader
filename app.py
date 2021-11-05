@@ -81,7 +81,7 @@ def main():
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
 			# race standardization
-			races = df.race.unique().dropna()
+			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
