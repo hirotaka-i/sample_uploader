@@ -3,7 +3,7 @@ import streamlit.components.v1 as stc
 
 # File Processing Pkgs
 import pandas as pd
-
+import numpy as np
 
 def checkSampleManifest(data, dup_not_allowed=True):
   """
@@ -116,83 +116,6 @@ def checkSampleManifest(data, dup_not_allowed=True):
     flag=1
   print(x2.race.value_counts().to_frame())
 
-
-  # family_history
-  nmiss_fh = sum(pd.isna(x2.family_history))
-  if nmiss_fh>0: # fill na
-    print('\nfamily history info missing --> recoded as Unknown:', nmiss_fh)
-    x2['family_history'] = x2.family_history.fillna('Unknown')
-    flag=1
-  else:
-    print('\nrace info: no missing')
-  fh_er = np.setdiff1d(x2.family_history.unique().astype('str'), ["Yes", "No", "Unknown"])
-  if len(fh_er)>0:
-    print('Undefined value:', fh_er)
-    flag=1
-  print(x2.family_history.value_counts().to_frame())
-
-
-  # numeric parameter check
-  print('\n')
-  for v in ['age', 'age_of_onset', 'age_at_diagnosis']:
-    if x2.dtypes[v] not in ['float64', 'int64']:
-      print(v, 'is not numeric')
-      flag=1
-
-  # Other missing check
-  x2_non_miss_check = x2[['sample_id', 'study', 'sample_type', 'region', 'Genotyping_site', 'Sample_submitter']].copy()
-  if x2_non_miss_check.isna().sum().sum()>0:
-    print('\n!!!SERIOUS ERROR!!! \nMissing not allowed for the following columns. Please fill and repeat this process again.')
-    print(x2_non_miss_check.info())
-    return
-
-  # Genotyping_site check
-  gs_er = np.setdiff1d(x2.Genotyping_site.unique().astype('str'), ['NIH', 'Fulgent'])
-  if len(gs_er)>0:
-    print('Undefined value:', fh_er)
-    print('\n!!!SERIOUS ERROR!!! \nGenotyping_site is either NIH or Fulgent')
-    return
-
-  # If shipping to Fulgent, Box ID and Well position determined? 
-  x2_fulgent_non_miss_check = x2.loc[x2.Genotyping_site=='Fulgent', 
-                                     ['sample_id', 'DNA_volume', 'DNA_conc',  'Plate_name', 'Plate_position']
-                                     ].copy()
-  if x2_fulgent_non_miss_check.isna().sum().sum()>0:
-    print('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
-    print(x2_fulgent_non_miss_check.info())
-    return
-
-  # Plate name, Position check
-  print('\n==== Check N per plate/box (Usually less than 96) ====')
-  x2_plate_fillna = x2.copy()
-  x2_plate_fillna.Plate_name = x2_plate_fillna.Plate_name.fillna('Not Provided')
-  for plate in x2_plate_fillna.Plate_name.unique():
-    x2_plate = x2_plate_fillna[x2_plate_fillna.Plate_name==plate].copy()
-    x2_plate_pos = x2_plate.Plate_position
-    # duplicated position check
-    if plate!='Not Provided':
-      dup_pos = x2_plate_pos[x2_plate_pos.duplicated()].unique()
-      if len(dup_pos)>0:
-        print(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated - {dup_pos} on [{plate}]')
-        return
-  xtab = x2_plate_fillna.pivot_table(index='Plate_name', 
-                      columns='study_arm', margins=True,
-                      values='sample_id', aggfunc='count', fill_value=0)
-  print(xtab)
-
-
-  # return the data
-  if flag==1:
-    print('\n=============\nReturning a dataframe with non-dup entries, non-missing IDs and non-missing sex, race and family history (missing replaced with "Unknown")\nPlease work a little bit more...')
-    return(x2.reset_index(drop=True)) # reset index
-
-  if flag==0:
-    print('\n=============\nWELL DONE! The dataset is ready to be assinged for GP2IDs')
-    data_qced = data[cols].copy()
-    data_qced['QC'] = 'PASS' # This column is required to provide giveGP2ID
-    return (data_qced)
-
-
 @st.cache
 def load_image(image_file):
 	img = Image.open(image_file)
@@ -219,37 +142,37 @@ def main():
 
 	elif choice == menu[1]:
 		st.subheader(menu[1])
-		sm_file = st.file_uploader("Upload xlsx",type=['xlsx'])
+		data_file = st.file_uploader("Upload xlsx",type=['xlsx'])
 		if st.button("Process"):
-			if sm_file is not None:
-				file_details = {"Filename":sm_file.name,"FileType":sm_file.type,"FileSize":sm_file.size}
+			if data_file is not None:
+				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
                 df = pd.read_excel(data_file,sheet_name=0)
                 st.dataframe(df)
 
 				# # Check File Type
-				# if sm_file.type == "text/plain":
-				# 	# raw_text = sm_file.read() # read as bytes
+				# if data_file.type == "text/plain":
+				# 	# raw_text = data_file.read() # read as bytes
 				# 	# st.write(raw_text)
 				# 	# st.text(raw_text) # fails
-				# 	st.text(str(sm_file.read(),"utf-8")) # empty
-				# 	raw_text = str(sm_file.read(),"utf-8") # works with st.text and st.write,used for futher processing
+				# 	st.text(str(data_file.read(),"utf-8")) # empty
+				# 	raw_text = str(data_file.read(),"utf-8") # works with st.text and st.write,used for futher processing
 				# 	# st.text(raw_text) # Works
 				# 	st.write(raw_text) # works
-				# elif sm_file.type == "application/pdf":
-				# 	# raw_text = read_pdf(sm_file)
+				# elif data_file.type == "application/pdf":
+				# 	# raw_text = read_pdf(data_file)
 				# 	# st.write(raw_text)
 				# 	try:
-				# 		with pdfplumber.open(sm_file) as pdf:
+				# 		with pdfplumber.open(data_file) as pdf:
 				# 		    page = pdf.pages[0]
 				# 		    st.write(page.extract_text())
 				# 	except:
 				# 		st.write("None")
 					    
 					
-				# elif sm_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+				# elif data_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
 				# # Use the right file processor ( Docx,Docx2Text,etc)
-				# 	raw_text = docx2txt.process(sm_file) # Parse in the uploadFile Class directory
+				# 	raw_text = docx2txt.process(data_file) # Parse in the uploadFile Class directory
 				# 	st.write(raw_text)
 
 	else:
