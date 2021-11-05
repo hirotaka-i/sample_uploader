@@ -134,12 +134,13 @@ def main():
 		df['sex_for_qc'] = df.sex.fillna('Not Reported').replace(mapdic)
 
 		# cross-tabulation of study_arm and Phenotype
-		st.text('=== Phenotype x study_arm===')
-		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
+		st.text('=== sex_for_qc x sex ===')
+		df['sex']=df.sex.fillna('_Missing')
+		xtab = df.pivot_table(index='sex_for_qc', columns='sex', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
 		
-		ph_conf = st.checkbox('Confirm Phenotype?')
+		sex_conf = st.checkbox('Confirm sex_for_qc?')
 		if ph_conf:
 			st.info('Thank you')
 
