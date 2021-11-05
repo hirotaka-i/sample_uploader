@@ -192,7 +192,7 @@ def main():
 						elif nuniq==1:
 							st.text(f'{v} - One value = {vuniq[0]}, ({nmiss} entries missing)')
 						elif nuniq <6:
-							st.write(df[v].fillna('_Missing').value_counts)
+							st.write(df[v].fillna('_Missing').value_counts())
 						else:
 							st.text(f'{v} - histgram ({nmiss} entries missing)')
 							hist_values=np.histogram(df[v].dropna())[0]
