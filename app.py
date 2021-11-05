@@ -102,36 +102,37 @@ def main():
 					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
 			df['race'] = df.race.map(mapdic)
 
-		if st.button("Confirm Phenotype Allocation"):
-			# cross-tabulation of study_arm and Phenotype
-			print('\n=== study_arm X Phenotype ===')
-			df['Phenotype'] = df.study_arm.map(phenotypes)
-			xtab = df.pivot_table(index='study_arm', columns='Phenotype', margins=True,
-									values='sample_id', aggfunc='count', fill_value=0)
-			st.text(xtab)
+			if st.button("Confirm Phenotype Allocation"):
+				# cross-tabulation of study_arm and Phenotype
+				print('\n=== study_arm X Phenotype ===')
+				df['Phenotype'] = df.study_arm.map(phenotypes)
+				xtab = df.pivot_table(index='study_arm', columns='Phenotype', margins=True,
+										values='sample_id', aggfunc='count', fill_value=0)
+				st.text(xtab)
 
-		if st.button("Plate check"):
-			st.info('Please make sure, N of samples on each plate are =<96')
-			df['Plate_name'] = df.Plate_name.fillna('Missing')
-			for plate in df.Plate_name.unique():
-				df_plate = df[df.Plate_name==plate].copy()
-				df_plate_pos = df_plate.Plate_position
-				# duplicated position check
-				if plate!='Missing':
-					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
-					if len(dup_pos)>0:
-						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
-					
-			xtab = df.pivot_table(index='Plate_name', 
-								columns='study_arm', margins=True,
-								values='sample_id', aggfunc='count', fill_value=0)
-			st.write(xtab)
-		
-		if st.button('Age distribution check'):
-		
-		
-		if st.button("Check2"):
-			st.write(df.head())
+			if st.button("Plate check"):
+				st.info('Please make sure, N of samples on each plate are =<96')
+				df['Plate_name'] = df.Plate_name.fillna('Missing')
+				for plate in df.Plate_name.unique():
+					df_plate = df[df.Plate_name==plate].copy()
+					df_plate_pos = df_plate.Plate_position
+					# duplicated position check
+					if plate!='Missing':
+						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
+						if len(dup_pos)>0:
+							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
+						
+				xtab = df.pivot_table(index='Plate_name', 
+									columns='study_arm', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+				st.write(xtab)
+			
+			if st.button('Age distribution check'):
+                st.text('building')
+			
+			
+			if st.button("Check2"):
+				st.write(df.head())
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
