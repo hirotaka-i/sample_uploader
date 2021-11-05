@@ -29,7 +29,7 @@ def main():
 
 
 	ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
-	cols = st.beta_columns(ncol)
+	cols = st.columns(ncol)
 
 	for i, x in enumerate(cols):
 		x.selectbox(f"Input # {i}",[1,2,3], key=i)
@@ -75,11 +75,11 @@ def main():
 				
 				st.text(x1.study_arm.value_counts())
 				phenotypes={}
-				for arm in x1.study_arm:
+				for arm in x1.study_arm.unique():
 					if arm != 'Unknown':
 						n_arm = (x1.study_arm==arm).sum()
 						phenotypes[arm] = n_arm
-				st.text(phenotypes)
+				st.write(phenotypes)
 
 
 
