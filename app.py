@@ -103,7 +103,7 @@ def main():
 			st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
 		# study_arm --> Phenotype
-		st.subheader('Create "Phenotype")
+		st.subheader('Create "Phenotype"')
 		st.text(df.study_arm.value_counts())
 		arms=df.study_arm.dropna().unique().astype('str')
 		n_arms = st.columns(len(arms))
