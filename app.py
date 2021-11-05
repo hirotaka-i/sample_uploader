@@ -55,15 +55,16 @@ def main():
 					st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
 				
 				if sum(pd.isna(x1.clinical_id))>0:
-					st.error('All sample must have clinical ID (can be same as the sample ID')
 					st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
+					st.error('All sample must have clinical ID (can be same as the sample ID)')
+					
 			
 			  # study_arm and Phenotype
 				nmiss_study_arm = sum(pd.isna(x1.study_arm))
 				if nmiss_study_arm>0: # fill na
 					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
 					x1['study_arm'] = x1.study_arm.fillna('Unknown')
-					st.text(x1.study_arm.value_count())
+				st.text(x1.study_arm.value_count())
 				# if nmiss_Phenotype>0: # fill na
 				#	 print('N of Phenotype info missing --> recoded as "Not Reported":', nmiss_Phenotype)
 				#	 x2['Phenotype']=x2.Phenotype.fillna("Not Reported")
