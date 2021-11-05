@@ -44,7 +44,7 @@ def main():
 	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 	
 	if choice in menu[:2]:
-		st.test(choice)
+		st.text(choice)
 	if data_file is not None:
 			st.header("Data Check and self-QC")
 			# for debug purpose. get the file detail
