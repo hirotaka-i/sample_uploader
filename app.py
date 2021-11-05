@@ -232,7 +232,7 @@ def main():
 		st.text('=== region_for_qc X region ===')
 		dft = df.copy()
 		dft['region'] = dft.region.fillna('_Missing')
-		xtab = df.pivot_table(index='region_for_qc', columns='region', margins=True,
+		xtab = dft.pivot_table(index='region_for_qc', columns='region', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
