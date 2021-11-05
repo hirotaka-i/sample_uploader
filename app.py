@@ -171,17 +171,18 @@ def main():
 
 			if st.button("Check Distribution"):
 				for v in numerics_cols:
+                    nmiss = pd.isna(df[v]).sum()
 					vuniq = df[v].dropna().unique()
 					nuniq = len(vuniq)
 					if nuniq==0:
-						st.text(f'{v} - missing')
+						st.text(f'{v} - All missing')
 					elif nuniq==1:
-						st.text(f'{v} - one value - {vuniq[0]}')
+						st.text(f'{v} - One value = {vuniq[0]}, ({nmiss} entries missing)')
 					elif nuniq <6:
 						st.write(df[v].fillna('_Missing').value_counts)
 					else:
-						st.text(f'{v} - histgram')
-						hist_values=np.histogram(df[v])[0]
+						st.text(f'{v} - histgram ({nmiss} entries missing)')
+						hist_values=np.histogram(df[v].dropna())[0]
 						st.bar_chart(hist_values, )
 
 			# Sample Submitter
