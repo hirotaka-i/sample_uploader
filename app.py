@@ -229,6 +229,7 @@ def main():
 		df['Submitter'] = Submitter
 
 		if st.button("Finished?"):
+            st.text("If everything is good, you will see the download link for the qced data")
 			if not Submitter:
 				st.error('Have you input the submitter?')
 			elif flag==0:
