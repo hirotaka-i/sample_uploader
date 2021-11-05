@@ -37,8 +37,20 @@ def main():
 			file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 			df = read_file(data_file)
 			st.text('Counts by study_arm')
-			st.text(df.study_arm.value_counts())
+			st.text(df.study_arm.value_counts(dropna=False))
+
+			arms=df.study_arm.dropna().unique()
+			n_arms = st.columns(len(arms))
+			phenotypes={}
+			for i, x in enumerate(n_arms):
+				with x:
+					arm = arms[i]
+					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
+
+
+
 		if st.button("Check1"):
+			st.text(phenotypes)
 			st.write(file_details)
 			st.dataframe(df.head())
 		
@@ -78,8 +90,6 @@ def main():
 					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
 					x1['study_arm'] = x1.study_arm.fillna('Unknown')
 				
-				st.text('Counts by study_arm')
-				st.text(x1.study_arm.value_counts())
 				arms=x1.study_arm.unique()
 				n_arms = st.columns(len(arms))
 				phenotypes={}
