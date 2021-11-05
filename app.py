@@ -126,7 +126,7 @@ def main():
 			# family history for qc
 			st.subheader('Create "family_history_for_qc"')
 			st.text(df.family_history.value_counts())
-			family_historys = df.family_history.dropna().unique()
+			family_historys = df.family_history.dropna().unique().astype('str')
 			nmiss = sum(pd.isna(df.family_history))
 			if nmiss>0:
 				st.text(f'{nmiss} entries missing family_history')
