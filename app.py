@@ -31,16 +31,16 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	flag=0
+	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
+	
 	if choice in menu[:2]:
-
+		
 		if data_file is not None:
+			st.header("Data Check and self-QC")
 			# for debug purpose. get the file detail
 			# file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 			# st.write(file_details)
 			
-
-			st.header("Data Check and self-QC")
-			data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 			# read a file
 			df = read_file(data_file)
 			df_non_miss_check = df[['study', 'sample_id', 'clinical_id', 'sex', 'study_arm']].copy()
