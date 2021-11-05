@@ -15,6 +15,9 @@ cols = ['study', 'sample_id', 'sample_type',
 		'study_arm', 'sex', 'race', 
 		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
+required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
+fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
+
 today = dt.datetime.today()
 version = f'{today.year}{today.month}{today.day}'
 
@@ -38,19 +41,27 @@ def get_table_download_link(df):
 	href = f'<a href="data:file/csv;base64,{b64}"  download="{study_code}_sample_manifest_selfQC_{version}.csv">Download csv file</a>'
 	return href
 	
-@st.cache
-def load_image(image_file):
-	img = Image.open(image_file)
-	return img 
+# @st.cache
+# def load_image(image_file):
+# 	img = Image.open(image_file)
+# 	return img 
 
 
 def main():
-	st.title("GP2 sample manifest checker")
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	flag=0
+	ph_conf=0
+	sex_conf=0
+	race_conf=0
+	fh_conf=0
 	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 	
+
+	st.title("GP2 sample manifest checker")
+	st.text('This is a web app to self-check the sample manifest')
+    st.text('The template download from https://docs.google.com/spreadsheets/d/1ThpUVBCRaPdDSiQiKZVwFpwWbW8mZxhqurv7-jBPrM4')
+    st.text('In the above link, go to "File"> "Download" (as xlsx/csv) ')
 	if data_file is not None:
 		st.header("Data Check and self-QC")
 		# for debug purpose. get the file detail
@@ -59,10 +70,9 @@ def main():
 		
 		# read a file
 		df = read_file(data_file)
-		required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
+		
 		st.text(f'Required: {required_cols}')
 		if choice=='For Fulgent':
-			fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
 			required_cols = required_cols + fulgent_cols
 			st.text(f'Required for Fulgent: {fulgent_cols}')
 		df_non_miss_check = df[required_cols].copy()
@@ -93,7 +103,7 @@ def main():
 			st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
 		# study_arm --> Phenotype
-		st.subheader('Counts by study_arm')
+		st.subheader('Create "Phenotype")
 		st.text(df.study_arm.value_counts())
 		arms=df.study_arm.dropna().unique().astype('str')
 		n_arms = st.columns(len(arms))
@@ -109,7 +119,9 @@ def main():
 		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
-
+		if st.button("Confirm?"):
+			st.info('Thank you!')
+			confm+=1
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
