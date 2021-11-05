@@ -64,6 +64,10 @@ def main():
 				st.text(f'N of sample_id (entries):{df.shape[0]}')
 				st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
+			# Sample Submitter
+			Submitter = st.text_input('Sample Submitter (First name Initial + Last name) (e.g.- H. Morris)')
+			df['Submitter'] = Submitter
+
 			# study_arm --> Phenotype
 			st.text('Counts by study_arm')
 			st.text(df.study_arm.value_counts())
@@ -76,9 +80,21 @@ def main():
 					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-			# Sample Submitter
-			Submitter = st.text_input('Sample Submitter (First name Initial + Last name) (e.g.- H. Morris)')
-			df['Submitter'] = Submitter
+			# race standardization
+			st.text('Counts by race')
+            nmiss = pd.isna(df.race).sum()
+            if nmiss>0:
+                st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
+            race_miss = 
+			st.text(df.race.value_counts(dropna=False))
+			races=df.race.dropna().unique()
+			n_arms = st.columns(len(arms))
+			phenotypes={}
+			for i, x in enumerate(n_arms):
+				with x:
+					arm = arms[i]
+					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
+			df['Phenotype'] = df.study_arm.map(phenotypes)
 
 		if st.button("Confirm Phenotype Allocation"):
 			# cross-tabulation of study_arm and Phenotype
@@ -89,23 +105,23 @@ def main():
 			st.text(xtab)
 
 		if st.button("Plate check"):
-			st.info('Please make sure, the samples on each plate are =<96')
-			df['Plate_name'] = df.Plate_name.fillna('Not Provided')
+			st.info('Please make sure, N of samples on each plate are =<96')
+			df['Plate_name'] = df.Plate_name.fillna('Missing')
 			for plate in df.Plate_name.unique():
 				df_plate = df[df.Plate_name==plate].copy()
 				df_plate_pos = df_plate.Plate_position
 				# duplicated position check
-				if plate!='Not Provided':
+				if plate!='Missing':
 					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 					if len(dup_pos)>0:
-						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated - {dup_pos} on [{plate}]')
+						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
 					
 			xtab = df.pivot_table(index='Plate_name', 
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
 		
-		
+		if st.button('Age distribution check'):
 		
 		
 		if st.button("Check2"):
