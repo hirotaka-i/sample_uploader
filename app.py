@@ -80,27 +80,27 @@ def main():
 					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-			# race standardization
-			st.text('Counts by race')
-			races = df.race.unique().dropna()
-			nmiss = sum(pd.isna(df.race))
-			if nmiss>0:
-				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-				df['race'] = df.fillna('Not Reported')
+			# # race standardization
+			# st.text('Counts by race')
+			# races = df.race.unique().dropna()
+			# nmiss = sum(pd.isna(df.race))
+			# if nmiss>0:
+			# 	st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
+			# 	df['race'] = df.fillna('Not Reported')
 			
-			st.text(df.race.value_counts())
+			# st.text(df.race.value_counts())
 			
-			mapdic = {'Not Reported':'Not Reported'}
-			st.text(df.race.value_counts(dropna=False))
-			n_races = st.columns(len(races))
+			# mapdic = {'Not Reported':'Not Reported'}
+			# st.text(df.race.value_counts(dropna=False))
+			# n_races = st.columns(len(races))
 
-			for i, x in enumerate(n_races):
-				with x:
-					race = races[i]
-					mapdic[arm]=x.selectbox(f"Select the most match for [{race}]",
-					[["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
-					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
-			df['race'] = df.race.map(mapdic)
+			# for i, x in enumerate(n_races):
+			# 	with x:
+			# 		race = races[i]
+			# 		mapdic[arm]=x.selectbox(f"Select the most match for [{race}]",
+			# 		[["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
+			# 		"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
+			# df['race'] = df.race.map(mapdic)
 
 			if st.button("Confirm Phenotype Allocation"):
 				# cross-tabulation of study_arm and Phenotype
@@ -128,7 +128,7 @@ def main():
 				st.write(xtab)
 			
 			if st.button('Age distribution check'):
-                st.text('building')
+				st.text('building')
 			
 			
 			if st.button("Check2"):
