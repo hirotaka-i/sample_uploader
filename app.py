@@ -81,16 +81,10 @@ def main():
 			st.text(phenotypes)
 			# cross-tabulation of study_arm and Phenotype
 			print('\n=== study_arm X Phenotype ===')
-            df['Phenotype'] = df.study_arm.map(phenotypes)
+			df['Phenotype'] = df.study_arm.map(phenotypes)
 			xtab = df.pivot_table(index='study_arm', columns='Phenotype', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
 			st.text(xtab)
-			# undefined "Phenotype"
-			ph_er = np.setdiff1d(x2.Phenotype.astype('str'), ["PD", "Control", "Prodromal", "Other", "Not Reported"])
-			if len(ph_er)>0:
-				print(f'\nUndefined "Phenotype" value: {ph_er}')
-				flag=1
-
 
 		
 		if st.button("Check2"):
