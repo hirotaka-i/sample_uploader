@@ -74,7 +74,7 @@ def main():
 					with x:
 						arm = arms[i]
 						phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
-				st.text(phenotypes)
+					st.text(phenotypes)
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
