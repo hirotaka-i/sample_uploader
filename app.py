@@ -115,7 +115,7 @@ def main():
 		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
-		if st.button("Confirm?"):
+		if st.button("Confirm Phenotype?"):
 			st.info('Thank you!')
 			ph_conf=1
 
@@ -141,7 +141,7 @@ def main():
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
-		if st.button("Confirm?"):
+		if st.button("Confirm race_for_qc?"):
 			st.info('Thank you!')
 			race_conf=1
 
@@ -171,7 +171,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		if st.button("Confirm?"):
+		if st.button("Confirm family_history_for_qc?"):
 			st.info('Thank you!')
 			fh_conf=1
 			
