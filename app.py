@@ -117,8 +117,8 @@ def main():
 		st.text(xtab)
 		
 		ph_conf = st.checkbox('Confirm?')
-        if ph_conf:
-            st.input('Thank you')
+		if ph_conf:
+			st.info('Thank you')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -144,8 +144,8 @@ def main():
 		st.write(xtab)
 		
 		race_conf = st.checkbox('Confirm?')
-        if race_conf:
-            st.input('Thank you')
+		if race_conf:
+			st.info('Thank you')
 		
 
 		# family history for qc
@@ -175,8 +175,8 @@ def main():
 		st.write(xtab)
 
 		fh_conf = st.checkbox('Confirm?')
-        if fh_conf:
-            st.input('Thank you')
+		if fh_conf:
+			st.info('Thank you')
 
 		# Plate Info
 		st.subheader('Plate Info')
