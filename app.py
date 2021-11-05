@@ -74,8 +74,8 @@ def main():
 				cols = st.columns(len(phenotypes))
 
 
-	ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
-	cols = st.columns(ncol)
+	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
+	# cols = st.columns(ncol)
 
 
 
