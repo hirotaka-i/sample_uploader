@@ -161,11 +161,10 @@ def main():
 			st.subheader('Numeric Values')
 			numerics_cols = ['DNA_volume', 'DNA_conc', 'r260_280','age', 'age_of_onset', 'age_at_diagnosis']
 			for v in numerics_cols:
-                vals = df.dtypes[v]
-				if vals not in ['float64', 'int64']:
+				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					st.bar_chart(vals)
+					st.bar_chart(df[v])
 				
 			if st.button('Age distribution check'):
 				st.text('test')
