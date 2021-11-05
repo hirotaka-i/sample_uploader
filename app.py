@@ -13,12 +13,17 @@ cols = ['study', 'sample_id', 'sample_type',
 		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
 
+def read_file(data_file):
+	if data_file.type == "text/csv":
+		df = pd.read_csv(data_file)
+	elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+		df = pd.read_excel(data_file, sheet_name=0)
+	return (df)
 
 @st.cache
 def load_image(image_file):
 	img = Image.open(image_file)
 	return img 
-
 
 
 def main():
@@ -27,16 +32,12 @@ def main():
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
 		st.subheader("Opeartion:")
-		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX", type=['csv', 'xlsx'])
+		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if st.button("Check1"):
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
-				if data_file.type == "text/csv":
-					df = pd.read_csv(data_file)
-				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-					df = pd.read_excel(data_file, sheet_name=0)
-
+				df = read_file(file_details)
 				st.dataframe(df.head())
 		
 		if st.button("Check2"):
