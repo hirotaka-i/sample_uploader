@@ -26,11 +26,6 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 
-
-
-	ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
-	cols = st.columns(ncol)
-
 	for i, x in enumerate(cols):
 		x.selectbox(f"Input # {i}",[1,2,3], key=i)
 		
@@ -73,16 +68,14 @@ def main():
 					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
 					x1['study_arm'] = x1.study_arm.fillna('Unknown')
 				
+				st.text('Counts by study_arm')
 				st.text(x1.study_arm.value_counts())
-				phenotypes={}
-				for arm in x1.study_arm.unique():
-					if arm != 'Unknown':
-						n_arm = (x1.study_arm==arm).sum()
-						phenotypes[arm] = n_arm
-				st.write(phenotypes)
+				phenotypes=x1.study_arm.unique()
+				cols = st.columns(len(phenotypes))
 
 
-
+	ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
+	cols = st.columns(ncol)
 
 
 
