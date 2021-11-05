@@ -5,6 +5,194 @@ import streamlit.components.v1 as stc
 import pandas as pd
 
 
+def checkSampleManifest(data, dup_not_allowed=True):
+  """
+  This function is to be used for data qc. 
+  Input data should have columns named as the templete PLUS Phenotype!
+  * Phenotype(["PD", "Control", "Prodromal", "Other", "Not Reported"])
+  This checks the following
+  1. columns
+  2. unique sample_id (no mising)
+  2. clincal_id can be duplicated but no missing
+  3. Phenotype sex, race, sample_type should be given (no missing)
+  4. For Fulgent samples, we need Plate_id and Plate_position
+  """
+  cols = ['study', 'sample_id', 'sample_type',
+          'DNA_volume', 'DNA_conc', 'r260_280',
+          'Plate_name', 'Plate_position', 'clinical_id', 
+          'study_arm', 'sex', 'race', 
+          'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
+          'region', 'comment', 'alternative_id1', 'alternative_id2', 
+          'Phenotype','Genotyping_site', 'Sample_submitter', 'original_manifest']
+  nocols = np.setdiff1d(cols, data.columns)
+  if len(nocols)>0:
+    print('!!!SERIOUS ERROR!!! \nSome columns are missing')
+    print('Missing columns:', nocols)
+    return
+  
+  # start
+  flag=0
+
+  # NAs
+  print('N of original data entries:', data.shape[0])
+  x1 = data[pd.notna(data.sample_id)].copy()
+  print('N of missing sample_id --> removed:', data.shape[0] - x1.shape[0])
+  # duplication
+  x2 = x1.drop_duplicates(keep='first').copy()
+  print('N of duplicated entries --> removed:', x2.shape[0] - x1.shape[0])
+  # effective entry
+  print('\nN of effective entries:', x2.shape[0])
+  # unique sample_id, clinical_id
+  print('N of unique sample_id:', len(x2.sample_id.unique()))
+  print('N of unique clinical_id:', len(x2.clinical_id.unique()), '\n')
+  
+  # dup check
+  sample_id_dup =  x2.sample_id[x2.sample_id.duplicated()].unique()
+  if len(sample_id_dup)>0:
+    print('Duplicated sample_id:', sample_id_dup)
+  clinical_id_dup =  x2.clinical_id[x2.clinical_id.duplicated()].unique()
+  if len(clinical_id_dup)>0:
+    print('Duplicated clinical_id:', clinical_id_dup)
+  if (len(sample_id_dup) + len(clinical_id_dup)) > 0:
+    if dup_not_allowed:
+      print('If the duplications are fine, set option as dup_not_allowed=False')
+      print('exit')
+      return
+    else: 
+      print('"dup_not_allowed=False" option is active')
+      print('!!DUPLICATIONS IGNORED!!')
+
+  # All have clinical ID?
+  if sum(pd.isna(x2.clinical_id))>0:
+    print('\n!!!SERIOUS ERROR!!! \nPlease provide clinical ID for all entries with sample IDs')
+    print('N of entries with clinical ID missing:', sum(pd.isna(x2.clinical_id)))
+    return
+
+  # study_arm and Phenotype
+  nmiss_study_arm = sum(pd.isna(x2.study_arm))
+  if nmiss_study_arm>0: # fill na
+    print('N of study_arm info missing --> recoded as Unknown:', nmiss_study_arm)
+    x2['study_arm'] = x2.study_arm.fillna('Unknown')
+  nmiss_Phenotype = sum(pd.isna(x2.Phenotype))
+  if nmiss_Phenotype>0: # fill na
+    print('N of Phenotype info missing --> recoded as "Not Reported":', nmiss_Phenotype)
+    x2['Phenotype']=x2.Phenotype.fillna("Not Reported")
+  # cross-tabulation of study_arm and Phenotype
+  print('\n=== study_arm X Phenotype ===')
+  xtab = x2.pivot_table(index='study_arm', columns='Phenotype', margins=True,
+                        values='sample_id', aggfunc='count', fill_value=0)
+  print(xtab)
+  # undefined "Phenotype"
+  ph_er = np.setdiff1d(x2.Phenotype.astype('str'), ["PD", "Control", "Prodromal", "Other", "Not Reported"])
+  if len(ph_er)>0:
+    print(f'\nUndefined "Phenotype" value: {ph_er}')
+    flag=1
+
+  # sex
+  nmiss_sex = sum(pd.isna(x2.sex))
+  if nmiss_sex>0: # fill na
+    print('\nsex info missing --> recoded as Unknown:', nmiss_sex)
+    x2['sex'] = x2.sex.fillna('Unknown')
+    flag=1
+  else:
+    print('\nsex info: no missing')
+  sex_er = np.setdiff1d(x2.sex.unique().astype('str'), ["Male", "Female", "Intersex", "Unknown", "Other", "Not Reported"])
+  if len(sex_er)>0:
+    print('Undefined value:', sex_er)
+    flag=1
+  print(x2.sex.value_counts().to_frame())
+  
+  # race
+  nmiss_race = sum(pd.isna(x2.race))
+  if nmiss_race>0: # fill na
+    print('\nrace info missing --> recoded as Unknown:', nmiss_race)
+    x2['race'] = x2.race.fillna('Unknown')
+    flag=1
+  else:
+    print('\nrace info: no missing')
+  race_er = np.setdiff1d(x2.race.unique().astype('str'), ["American Indian or Alaska Native", "Asian", "White", "Black or African American", "Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown", "Not Reported"])
+  if len(race_er)>0:
+    print('Undefined value:', race_er)
+    flag=1
+  print(x2.race.value_counts().to_frame())
+
+
+  # family_history
+  nmiss_fh = sum(pd.isna(x2.family_history))
+  if nmiss_fh>0: # fill na
+    print('\nfamily history info missing --> recoded as Unknown:', nmiss_fh)
+    x2['family_history'] = x2.family_history.fillna('Unknown')
+    flag=1
+  else:
+    print('\nrace info: no missing')
+  fh_er = np.setdiff1d(x2.family_history.unique().astype('str'), ["Yes", "No", "Unknown"])
+  if len(fh_er)>0:
+    print('Undefined value:', fh_er)
+    flag=1
+  print(x2.family_history.value_counts().to_frame())
+
+
+  # numeric parameter check
+  print('\n')
+  for v in ['age', 'age_of_onset', 'age_at_diagnosis']:
+    if x2.dtypes[v] not in ['float64', 'int64']:
+      print(v, 'is not numeric')
+      flag=1
+
+  # Other missing check
+  x2_non_miss_check = x2[['sample_id', 'study', 'sample_type', 'region', 'Genotyping_site', 'Sample_submitter']].copy()
+  if x2_non_miss_check.isna().sum().sum()>0:
+    print('\n!!!SERIOUS ERROR!!! \nMissing not allowed for the following columns. Please fill and repeat this process again.')
+    print(x2_non_miss_check.info())
+    return
+
+  # Genotyping_site check
+  gs_er = np.setdiff1d(x2.Genotyping_site.unique().astype('str'), ['NIH', 'Fulgent'])
+  if len(gs_er)>0:
+    print('Undefined value:', fh_er)
+    print('\n!!!SERIOUS ERROR!!! \nGenotyping_site is either NIH or Fulgent')
+    return
+
+  # If shipping to Fulgent, Box ID and Well position determined? 
+  x2_fulgent_non_miss_check = x2.loc[x2.Genotyping_site=='Fulgent', 
+                                     ['sample_id', 'DNA_volume', 'DNA_conc',  'Plate_name', 'Plate_position']
+                                     ].copy()
+  if x2_fulgent_non_miss_check.isna().sum().sum()>0:
+    print('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
+    print(x2_fulgent_non_miss_check.info())
+    return
+
+  # Plate name, Position check
+  print('\n==== Check N per plate/box (Usually less than 96) ====')
+  x2_plate_fillna = x2.copy()
+  x2_plate_fillna.Plate_name = x2_plate_fillna.Plate_name.fillna('Not Provided')
+  for plate in x2_plate_fillna.Plate_name.unique():
+    x2_plate = x2_plate_fillna[x2_plate_fillna.Plate_name==plate].copy()
+    x2_plate_pos = x2_plate.Plate_position
+    # duplicated position check
+    if plate!='Not Provided':
+      dup_pos = x2_plate_pos[x2_plate_pos.duplicated()].unique()
+      if len(dup_pos)>0:
+        print(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated - {dup_pos} on [{plate}]')
+        return
+  xtab = x2_plate_fillna.pivot_table(index='Plate_name', 
+                      columns='study_arm', margins=True,
+                      values='sample_id', aggfunc='count', fill_value=0)
+  print(xtab)
+
+
+  # return the data
+  if flag==1:
+    print('\n=============\nReturning a dataframe with non-dup entries, non-missing IDs and non-missing sex, race and family history (missing replaced with "Unknown")\nPlease work a little bit more...')
+    return(x2.reset_index(drop=True)) # reset index
+
+  if flag==0:
+    print('\n=============\nWELL DONE! The dataset is ready to be assinged for GP2IDs')
+    data_qced = data[cols].copy()
+    data_qced['QC'] = 'PASS' # This column is required to provide giveGP2ID
+    return (data_qced)
+
+
 @st.cache
 def load_image(image_file):
 	img = Image.open(image_file)
@@ -26,15 +214,19 @@ def main():
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
 				df = pd.read_csv(data_file)
-				st.dataframe(df)
+                df1 = checkSampleManifest(df)
+				st.dataframe(df1)
 
-	elif choice == "Sample Manifest":
-		st.subheader("Sample Manifest for NIH (on")
-		sm_file = st.file_uploader("Upload Sample Manifest File",type=['xlsx'])
+	elif choice == menu[1]:
+		st.subheader(menu[1])
+		sm_file = st.file_uploader("Upload xlsx",type=['xlsx'])
 		if st.button("Process"):
 			if sm_file is not None:
 				file_details = {"Filename":sm_file.name,"FileType":sm_file.type,"FileSize":sm_file.size}
 				st.write(file_details)
+                df = pd.read_excel(data_file,sheet_name=0)
+                st.dataframe(df)
+
 				# # Check File Type
 				# if sm_file.type == "text/plain":
 				# 	# raw_text = sm_file.read() # read as bytes
