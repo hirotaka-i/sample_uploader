@@ -87,7 +87,7 @@ def main():
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-				df['race2'] = df.fillna('Not Reported')
+				df['race2'] = df.race.fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
 			st.text(df.race.value_counts(dropna=False))
