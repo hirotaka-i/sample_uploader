@@ -167,7 +167,7 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					st.text('{v} is numeric')
+					st.text(f'{v} is numeric')
 
 			if st.button("Check"):
 				st.write(df.head())
