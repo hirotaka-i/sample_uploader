@@ -43,9 +43,17 @@ def main():
 			
 			missing_cols = np.setdiff1d(cols, df.columns)
 			if len(missing_cols)>0:
-				st.text(f'{missing_cols} are missing. (Please use the template')
+				st.info(f'{missing_cols} are missing. \nPlease use the template sheet')
 			else:
-				st.text(f'Column Name Check OK')
+				st.text(f'Column name OK')
+				st.text(f'N of original data entries:{df.shape[0]}')
+                x1 = df[pd.notna(df.sample_id)].copy()
+                st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
+                
+                sample_id_dup =  x2.sample_id[x2.sample_id.duplicated()].unique()
+                if len(sample_id_dup)>0:
+                    st.text('Duplicated sample_id:', sample_id_dup)
+				    st.info(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
