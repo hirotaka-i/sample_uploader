@@ -109,7 +109,7 @@ def main():
 			if st.button("Confirm Race assignments"):
 				# cross-tabulation of study_arm and Phenotype
 				st.text('=== race2 X race ===')
-				# df['race'] = df.race.fillna('Not Reported')
+				df['race'] = df.race.fillna('Missing')
 				xtab = df.pivot_table(index='race2', columns='race', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
