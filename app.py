@@ -34,10 +34,23 @@ def main():
 		st.subheader("Opeartion:")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
+			
+			# for debug purpose. can be removed
 			file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
+			st.write(file_details)
+			
+			# read a file
 			df = read_file(data_file)
 			st.text('Counts by study_arm')
 			st.text(df.study_arm.value_counts(dropna=False))
+
+			# required columns checks
+			df_non_miss_check = df[['sample_id', 'clinica_id', 'sex', 'study_arm']].copy()
+			if df_non_miss_check.isna().sum().sum()>0:
+			st.info('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
+			st.text(df_non_miss_check.info())
+
+
 
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
@@ -51,13 +64,52 @@ def main():
 
 		if st.button("Check1"):
 			st.text(phenotypes)
-			st.write(file_details)
-			st.dataframe(df.head())
+
+			# missing check
+			missing_cols = np.setdiff1d(cols, df.columns)
+			if len(missing_cols)>0:
+				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
+			else:
+				st.text(f'Column name OK')
+				st.text(f'N of original data entries:{df.shape[0]}')
+				x1 = df[pd.notna(df.sample_id)].copy()
+				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
+			
+			# 
+			sample_id_dup =  x1.sample_id[x1.sample_id.duplicated()].unique()
+			if len(sample_id_dup)>0:
+				st.text(f'Duplicated sample_id:{sample_id_dup}')
+				st.error(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+			
+			if sum(pd.isna(x1.clinical_id))>0:
+				st.text(f'N of entries with clinical ID missing:{sum(pd.isna(x1.clinical_id))}')
+				st.error('All sample must have clinical ID (can be same as the sample ID)')
+
+			# study_arm and Phenotype
+			nmiss_study_arm = sum(pd.isna(x2.study_arm))
+			if nmiss_study_arm>0: # fill na
+				print('N of study_arm info missing --> recoded as Unknown:', nmiss_study_arm)
+				x2['study_arm'] = x2.study_arm.fillna('Unknown')
+			nmiss_Phenotype = sum(pd.isna(x2.Phenotype))
+			if nmiss_Phenotype>0: # fill na
+				print('N of Phenotype info missing --> recoded as "Not Reported":', nmiss_Phenotype)
+				x2['Phenotype']=x2.Phenotype.fillna("Not Reported")
+			# cross-tabulation of study_arm and Phenotype
+			print('\n=== study_arm X Phenotype ===')
+			xtab = x2.pivot_table(index='study_arm', columns='Phenotype', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+			print(xtab)
+			# undefined "Phenotype"
+			ph_er = np.setdiff1d(x2.Phenotype.astype('str'), ["PD", "Control", "Prodromal", "Other", "Not Reported"])
+			if len(ph_er)>0:
+				print(f'\nUndefined "Phenotype" value: {ph_er}')
+				flag=1
+
+
 		
 		if st.button("Check2"):
 			if data_file is not None:
-				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
-				st.write(file_details)
+
 				if data_file.type == "text/csv":
 					df = pd.read_csv(data_file)
 				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
@@ -89,15 +141,6 @@ def main():
 				if nmiss_study_arm>0: # fill na
 					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
 					x1['study_arm'] = x1.study_arm.fillna('Unknown')
-				
-				arms=x1.study_arm.unique()
-				n_arms = st.columns(len(arms))
-				phenotypes={}
-				for i, x in enumerate(n_arms):
-					with x:
-						arm = arms[i]
-						phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
-					st.text(phenotypes)
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
