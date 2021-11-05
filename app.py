@@ -70,7 +70,7 @@ def main():
 
 			# study_arm --> Phenotype
 			st.info('Counts by study_arm')
-			st.text(df.study_arm.	counts())
+			st.text(df.study_arm.value_counts())
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
 			phenotypes={}
