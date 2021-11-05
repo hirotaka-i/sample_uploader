@@ -75,12 +75,13 @@ def main():
 					phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-			if st.button("Confirm Phenotype Allocation"):
-				# cross-tabulation of study_arm and Phenotype
-				st.text('=== Phenotype x study_arm===')
-				xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
-										values='sample_id', aggfunc='count', fill_value=0)
-				st.text(xtab)
+            # cross-tabulation of study_arm and Phenotype
+            st.text('=== Phenotype x study_arm===')
+            xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
+                                    values='sample_id', aggfunc='count', fill_value=0)
+            st.text(xtab)
+
+
 			# race for qc
 			st.subheader('Create "race_for_qc"')
 			st.text(df.race.value_counts())
@@ -97,20 +98,14 @@ def main():
 				"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
 			df['race_for_qc'] = df.race_for_qc.map(mapdic)
 			
-			if st.button("Confirm Race for QC"):
-				# cross-tabulation of study_arm and Phenotype
-				st.text('=== race_for_qc X race ===')
-				df['race'] = df.race.fillna('_Missing')
-				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
-										values='sample_id', aggfunc='count', fill_value=0)
-				st.write(xtab)
-			
 			# cross-tabulation of study_arm and Phenotype
 			st.text('=== race_for_qc X race ===')
 			df['race'] = df.race.fillna('_Missing')
 			xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
+
+
 			# family history for qc
 			st.subheader('Create "family_history_for_qc"')
 			st.text(df.family_history.value_counts())
@@ -129,14 +124,13 @@ def main():
 						fh = family_historys[i]
 						mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
 			df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
-
-			if st.button("Confirm Family History for QC"):
-				# cross-tabulation of study_arm and Phenotype
-				st.text('=== family_history_for_qc X family_history ===')
-				df['family_history'] = df.family_history.fillna('_Missing')
-				xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
-										values='sample_id', aggfunc='count', fill_value=0)
-				st.write(xtab)
+			
+			# cross-tabulation of study_arm and Phenotype
+			st.text('=== family_history_for_qc X family_history ===')
+			df['family_history'] = df.family_history.fillna('_Missing')
+			xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+			st.write(xtab)
 
 			# Plate Info
 			st.subheader('Plate Info')
