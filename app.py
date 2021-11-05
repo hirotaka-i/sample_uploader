@@ -121,7 +121,7 @@ def main():
 			
 			mapdic = {'Not Reported':'Not Reported'}
 
-			if len(family_historys)>0
+			if len(family_historys)>0:
 				n_fhs = st.columns(len(family_historys))
 				for i, x in enumerate(n_fhs):
 					with x:
