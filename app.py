@@ -5,6 +5,8 @@ import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
 import base64
+import datetime as dt
+
 # import matplotlib.pyplot as plt # don't work...
 
 cols = ['study', 'sample_id', 'sample_type',
@@ -13,6 +15,10 @@ cols = ['study', 'sample_id', 'sample_type',
 		'study_arm', 'sex', 'race', 
 		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
+today = dt.datetime.today()
+version = f'{today.year}{today.month}{today.day}'
+
+
 
 def read_file(data_file):
 	if data_file.type == "text/csv":
@@ -20,14 +26,16 @@ def read_file(data_file):
 	elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
 		df = pd.read_excel(data_file, sheet_name=0)
 	return (df)
+
 def get_table_download_link(df):
 	"""Generates a link allowing the data in a given panda dataframe to be downloaded
 	in:  dataframe
 	out: href string
 	"""
 	csv = df.to_csv(index=False)
+	study_code = df.study.unique()[0]
 	b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-	href = f'<a href="data:file/csv;base64,{b64}">Download csv file</a>'
+	href = f'<a href="data:file/csv;base64,{b64}"  download="{study_code}_sample_manifest_selfQC_{version}.csv">Download csv file</a>'
 	return href
 	
 @st.cache
