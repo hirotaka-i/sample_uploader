@@ -97,12 +97,10 @@ def main():
 			# 		mapdic[race]=x.selectbox(f"Select the best match for [{race}]",
 			# 		["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 			# 		"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
-			for i, x in enumerate(races):
-				with x:
-					race = races[i]
-					mapdic[race]=st.selectbox(f"Select the best match for [{race}]",
-					["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
-					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
+			for race in enumerate(races):
+				mapdic[race]=st.selectbox(f"Select the best match for [{race}]",
+				["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
+				"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
 			df['race2'] = df.race2.map(mapdic)
 
 			if st.button("Confirm Phenotype Allocation"):
