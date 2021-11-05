@@ -13,13 +13,13 @@ def load_image(image_file):
 
 
 def main():
-	st.title("File Upload Tutorial")
+	st.title("GP2 sample manifest checker")
 
-	menu = ["Dataset","Sample Manifest","About"]
+	menu = ["For Fulgent","For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 
-	if choice == "Dataset":
-		st.subheader("Dataset")
+	if choice == menu[0]:
+		st.subheader(menu[0])
 		data_file = st.file_uploader("Upload CSV",type=['csv'])
 		if st.button("Process"):
 			if data_file is not None:
@@ -29,8 +29,8 @@ def main():
 				st.dataframe(df)
 
 	elif choice == "Sample Manifest":
-		st.subheader("DocumentFiles")
-		sm_file = st.file_uploader("Upload Sample Manifest File",type=['excel'])
+		st.subheader("Sample Manifest for NIH (on")
+		sm_file = st.file_uploader("Upload Sample Manifest File",type=['xlsx'])
 		if st.button("Process"):
 			if sm_file is not None:
 				file_details = {"Filename":sm_file.name,"FileType":sm_file.type,"FileSize":sm_file.size}
