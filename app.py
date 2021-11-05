@@ -163,7 +163,7 @@ def main():
 				# duplicated position check
 				if plate!='Missing':
 					if len(df_plate_pos)>96:
-						st.error('Please make sure, N of samples on each plate are =<96')
+						st.error('Please make sure, N of samples on plate [{plate}] is =<96')
 						flag=1
 					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 					if len(dup_pos)>0:
@@ -182,21 +182,21 @@ def main():
 			if flag2==0:
 				st.text('Numeric chek --> OK. Check the distribution with the below button')
 
-			if st.button("Check Distribution"):
-				for v in numerics_cols:
-					nmiss = df[v].isna().sum()
-					vuniq = df[v].dropna().unique()
-					nuniq = len(vuniq)
-					if nuniq==0:
-						st.text(f'{v} - All missing')
-					elif nuniq==1:
-						st.text(f'{v} - One value = {vuniq[0]}, ({nmiss} entries missing)')
-					elif nuniq <6:
-						st.write(df[v].fillna('_Missing').value_counts)
-					else:
-						st.text(f'{v} - histgram ({nmiss} entries missing)')
-						hist_values=np.histogram(df[v].dropna())[0]
-						st.bar_chart(hist_values, )
+                if st.button("Check Distribution"):
+                    for v in numerics_cols:
+                        nmiss = df[v].isna().sum()
+                        vuniq = df[v].dropna().unique()
+                        nuniq = len(vuniq)
+                        if nuniq==0:
+                            st.text(f'{v} - All missing')
+                        elif nuniq==1:
+                            st.text(f'{v} - One value = {vuniq[0]}, ({nmiss} entries missing)')
+                        elif nuniq <6:
+                            st.write(df[v].fillna('_Missing').value_counts)
+                        else:
+                            st.text(f'{v} - histgram ({nmiss} entries missing)')
+                            hist_values=np.histogram(df[v].dropna())[0]
+                            st.bar_chart(hist_values, )
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + ". " + last name" (e.g.- H. Morris)')
