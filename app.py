@@ -233,7 +233,7 @@ def main():
 				st.error('Have you input the submitter?')
 			elif flag==0:
 				st.markdown(get_table_download_link(df), unsafe_allow_html=True)
-			elif (ph_conf + race_conf + sex_conf + fh_conf)>0:
+			elif (ph_conf + race_conf + sex_conf + fh_conf)==4:
 				st.error('Forget to confirm?')
 			else:
 				st.error('Please resolve all errors')
