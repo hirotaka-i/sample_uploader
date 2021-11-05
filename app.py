@@ -47,13 +47,13 @@ def main():
 			else:
 				st.text(f'Column name OK')
 				st.text(f'N of original data entries:{df.shape[0]}')
-                x1 = df[pd.notna(df.sample_id)].copy()
-                st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
-                
-                sample_id_dup =  x2.sample_id[x2.sample_id.duplicated()].unique()
-                if len(sample_id_dup)>0:
-                    st.text('Duplicated sample_id:', sample_id_dup)
-				    st.info(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
+				x1 = df[pd.notna(df.sample_id)].copy()
+				st.text(f'N of missing sample_id --> removed: {df.shape[0] - x1.shape[0]}')
+				
+				sample_id_dup =  x2.sample_id[x2.sample_id.duplicated()].unique()
+				if len(sample_id_dup)>0:
+					st.text('Duplicated sample_id:', sample_id_dup)
+					st.info(f'Unique sample IDs are required\n(clinical IDs can be duplicated if replicated)')
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
