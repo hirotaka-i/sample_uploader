@@ -4,7 +4,7 @@ import streamlit.components.v1 as stc
 # File Processing Pkgs
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt # don't work...
 
 cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
@@ -105,6 +105,12 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.write(xtab)
 			
+			# cross-tabulation of study_arm and Phenotype
+			st.text('=== race_for_qc X race ===')
+			df['race'] = df.race.fillna('_Missing')
+			xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+			st.write(xtab)
 			# family history for qc
 			st.subheader('Create "family_history_for_qc"')
 			st.text(df.family_history.value_counts())
@@ -159,9 +165,10 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					fig, ax = plt.suplots()
-					ax.hist(df[v])
-					st.pyplot(fig)
+					# fig, ax = plt.suplots()
+					# ax.hist(df[v])
+					# st.pyplot(fig)
+                    st.text('need work')
 				
 			if st.button('Age distribution check'):
 				st.text('test')
