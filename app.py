@@ -216,13 +216,13 @@ def main():
 		mapdic = {'Not Reported':'Not Reported'}
 
 		if len(regions)>0:
-            st.text('if ISO 3166-3 is available for the region, please provide')
-            st.write('https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3')
+			st.text('if ISO 3166-3 is available for the region, please provide')
+			st.write('https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3')
 			n_rgs = st.columns(len(regions))
 			for i, x in enumerate(n_rgs):
 				with x:
 					region = regions[i]
-    				mapdic[fh]=x.text_input(f'{region} in 3 LETTER or NA')
+					mapdic[fh]=x.text_input(f'{region} in 3 LETTER or NA')
 		df['region_for_qc'] = df.region_for_qc.map(mapdic)
 
 		# cross-tabulation 
