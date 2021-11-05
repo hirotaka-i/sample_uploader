@@ -167,16 +167,9 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					# fig, ax = plt.suplots()
-					# ax.hist(df[v])
-					# st.pyplot(fig)
-					st.text('need work')
-				
-			if st.button('Age distribution check'):
-				st.text('test')
-			
-			
-			if st.button("Check2"):
+					st.text('{v} is numeric')
+
+			if st.button("Check"):
 				st.write(df.head())
 
 			# Sample Submitter
