@@ -140,15 +140,16 @@ def main():
                 df1 = checkSampleManifest(df)
                 st.dataframe(df1)
 
-	elif choice == menu[1]:
+	# elif choice == menu[1]:
 		st.subheader(menu[1])
-		data_file = st.file_uploader("Upload xlsx",type=['xlsx'])
+		data_file = st.file_uploader("Upload XLSX",type=['xlsx'])
 		if st.button("Process"):
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
-                df = pd.read_excel(data_file,sheet_name=0)
-                st.dataframe(df)
+				df = pd.read_csv(data_file)
+                df1 = checkSampleManifest(df)
+                st.dataframe(df1)
 
 				# # Check File Type
 				# if data_file.type == "text/plain":
