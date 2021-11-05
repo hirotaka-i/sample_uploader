@@ -25,11 +25,21 @@ def main():
 	st.title("GP2 sample manifest checker")
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
-		
 	if choice in menu[:2]:
-		st.subheader("Dataset")
+		st.subheader("Opeartion:")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX", type=['csv', 'xlsx'])
-		if st.button("Check"):
+		if st.button("Check1"):
+			if data_file is not None:
+				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
+				st.write(file_details)
+				if data_file.type == "text/csv":
+					df = pd.read_csv(data_file)
+				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+					df = pd.read_excel(data_file, sheet_name=0)
+
+				st.dataframe(df.head())
+		
+		elif st.button("Check2"):
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
