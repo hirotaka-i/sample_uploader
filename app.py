@@ -180,7 +180,8 @@ def main():
 					elif nuniq <5:
 						st.write(df[v].fillna('_Missing').value_counts)
 					else:
-						st.bar_chart(df[v])
+						hist_values=np.histogram(df[v])[0]
+						st.bar_chart(hist_values)
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
