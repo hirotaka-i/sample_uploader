@@ -215,7 +215,7 @@ def main():
 				st.write(file_details)
 				df = pd.read_csv(data_file)
                 df1 = checkSampleManifest(df)
-				st.dataframe(df1)
+                st.dataframe(df1)
 
 	elif choice == menu[1]:
 		st.subheader(menu[1])
