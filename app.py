@@ -52,7 +52,7 @@ def main():
 			# required columns checks
 			elif df_non_miss_check.isna().sum().sum()>0:
 				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
-				st.text(df_non_miss_check.info())
+				st.write(df_non_miss_check.info())
 
 			# sample dup check
 			elif len(sample_id_dup)>0:
@@ -89,6 +89,7 @@ def main():
 			st.text(xtab)
 
 		if st.button("Plate check"):
+            st.info('Please make sure, the samples on each plate are =<96')
 			df['Plate_name'] = df.Plate_name.fillna('Not Provided')
 			for plate in df.Plate_name.unique():
 				df_plate = df[df.Plate_name==plate].copy()
