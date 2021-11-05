@@ -171,7 +171,7 @@ def main():
 
 			if st.button("Check Distribution"):
 				for v in numerics_cols:
-                    nmiss = pd.isna(df[v]).sum()
+					nmiss = df[v].isna().sum()
 					vuniq = df[v].dropna().unique()
 					nuniq = len(vuniq)
 					if nuniq==0:
