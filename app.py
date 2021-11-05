@@ -76,7 +76,7 @@ def main():
 			required_cols = required_cols + fulgent_cols
 			st.text(f'Required for Fulgent: {fulgent_cols}')
 		df_non_miss_check = df[required_cols].copy()
-		sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
+		sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 		
 		# missing check
 		missing_cols = np.setdiff1d(cols, df.columns)
@@ -93,7 +93,7 @@ def main():
 
 		# sample dup check
 		elif len(sample_id_dup)>0:
-			sample_id_dup =  df.sample_id[df.sample_id.duplicated()].unique()
+			sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 			st.text(f'Duplicated sample_id:{sample_id_dup}')
 			st.error(f'Unique sample IDs are required (clinical IDs can be duplicated if replicated)')
 			flag=1
