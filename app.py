@@ -25,9 +25,6 @@ def main():
 	st.title("GP2 sample manifest checker")
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
-
-	for i, x in enumerate(cols):
-		x.selectbox(f"Input # {i}",[1,2,3], key=i)
 		
 	if choice in menu[:2]:
 		st.subheader("Dataset")
@@ -72,6 +69,8 @@ def main():
 				st.text(x1.study_arm.value_counts())
 				phenotypes=x1.study_arm.unique()
 				cols = st.columns(len(phenotypes))
+				for i, x in enumerate(cols):
+					x.selectbox(f"Input # {i}",['PD', 'Control', 'Prodromal', 'Other'], key=i)
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
