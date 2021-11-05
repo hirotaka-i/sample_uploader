@@ -64,7 +64,7 @@ def main():
 				if nmiss_study_arm>0: # fill na
 					st.text(f'N of study_arm info missing --> recoded as Unknown:{nmiss_study_arm}')
 					x1['study_arm'] = x1.study_arm.fillna('Unknown')
-				st.text(x1.study_arm.value_count())
+				st.text(x1.study_arm.value_counts())
 				# if nmiss_Phenotype>0: # fill na
 				#	 print('N of Phenotype info missing --> recoded as "Not Reported":', nmiss_Phenotype)
 				#	 x2['Phenotype']=x2.Phenotype.fillna("Not Reported")
