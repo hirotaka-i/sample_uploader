@@ -224,6 +224,7 @@ def main():
 					region = regions[i]
 					mapdic[region]=x.text_input(f'[{region}] in 3 LETTER or NA')
 		st.text(mapdic)
+		st.write(df)
 		df['region_for_qc'] = df.region_for_qc.map(mapdic)
 
 		# cross-tabulation 
