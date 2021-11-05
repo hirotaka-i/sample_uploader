@@ -140,6 +140,7 @@ def main():
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
+		
 		race_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# family history for qc
