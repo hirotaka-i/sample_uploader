@@ -44,10 +44,15 @@ def main():
 			st.text('Counts by study_arm')
 			st.text(df.study_arm.value_counts(dropna=False))
 
+			# missing check
+			missing_cols = np.setdiff1d(cols, df.columns)
+			if len(missing_cols)>0:
+				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
+
 			# required columns checks
 			df_non_miss_check = df[['study', 'sample_id', 'clinical_id', 'sex', 'study_arm']].copy()
 			if df_non_miss_check.isna().sum().sum()>0:
-				st.info('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
+				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
 				st.text(df_non_miss_check.info())
 
 
@@ -65,10 +70,7 @@ def main():
 		if st.button("Check1"):
 			st.text(phenotypes)
 
-			# missing check
-			missing_cols = np.setdiff1d(cols, df.columns)
-			if len(missing_cols)>0:
-				st.error(f'{missing_cols} are missing. \nPlease use the template sheet')
+
 			else:
 				st.text(f'Column name OK')
 				st.text(f'N of original data entries:{df.shape[0]}')
