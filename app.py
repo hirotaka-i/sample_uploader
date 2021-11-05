@@ -169,8 +169,18 @@ def main():
 				else:
 					st.text(f'{v} is numeric')
 
-			if st.button("Check"):
-				st.write(df.head())
+			if st.button("Check Distribution"):
+				for v in numerics_cols:
+					vuniq = df[v].dropna.unique()
+					nuniq = len(vuniq)
+					if nuniq==0:
+						st.text(f'{v} - missing')
+					elif nuniq==1:
+						st.text(f'{v} - one value - {vuniq[0]}')
+					elif nuniq <5:
+						st.write(df[v].fillna('_Missing').value_counts)
+					else:
+						st.bar_chart(df[v])
 
 			# Sample Submitter
 			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
