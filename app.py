@@ -108,6 +108,8 @@ def main():
 				df['race'] = df.race.fillna('Missing')
 				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
+				st.write(xtab)
+			
 			# family history for qc
 			st.info('Counts by family_history')
 			st.text(df.family_history.value_counts())
@@ -118,11 +120,13 @@ def main():
 				df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
-			n_fhs = st.columns(len(family_historys))
-			for i, x in enumerate(n_fhs):
-				with x:
-					fh = n_fhs[i]
-					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
+
+			if len(family_historys)>0
+				n_fhs = st.columns(len(family_historys))
+				for i, x in enumerate(n_fhs):
+					with x:
+						fh = n_fhs[i]
+						mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
 			df['family_history_for_qc'] = df.family_history_for_qc.map(phenotypes)
 
 			if st.button("Confirm Family History for QC"):
@@ -131,7 +135,6 @@ def main():
 				df['family_history'] = df.family_history.fillna('_Missing')
 				xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
-
 				st.text(xtab)
 
 			if st.button("Plate check"):
