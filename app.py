@@ -228,7 +228,7 @@ def main():
 			st.text("If everything is good, you will see the download link for the qced data")
 			if not Submitter:
 				st.error('Have you input the submitter?')
-			elif ph_conf==	==sex_conf==fh_conf=='Y':
+			elif not ((ph_conf=='P') & (race_conf=='R') & (fh_conf=='F')):
 				st.error('Forget to confirm?')
 			elif flag==1:
 				st.error('Please resolve all errors')
