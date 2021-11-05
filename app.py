@@ -106,7 +106,7 @@ def main():
 		for i, x in enumerate(n_arms):
 			with x:
 				arm = arms[i]
-				phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
+				phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the closest Phenotype",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 		df['Phenotype'] = df.study_arm.map(phenotypes)
 
 		# cross-tabulation of study_arm and Phenotype
@@ -129,7 +129,7 @@ def main():
 		for i, x in enumerate(n_sexes):
 			with x:
 				sex = sexes[i]
-				mapdic[sex]=x.selectbox(f"[{sex}]: For QC, please pick the Phenotype below", 
+				mapdic[sex]=x.selectbox(f"[{sex}]: For QC, please pick a word below", 
 									["Male", "Female", "Intersex", "Unknown", "Other", "Not Reported"], key=i)
 		df['sex_for_qc'] = df.sex.replace(mapdic)
 
@@ -140,7 +140,7 @@ def main():
 		st.text(xtab)
 		
 		sex_conf = st.checkbox('Confirm sex_for_qc?')
-		if ph_conf:
+		if sex_conf:
 			st.info('Thank you')
 
 		# race for qc
@@ -187,7 +187,7 @@ def main():
 			for i, x in enumerate(n_fhs):
 				with x:
 					fh = family_historys[i]
-					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
+					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, any family history?',['Yes', 'No', 'Not Reported'], key=i)
 		df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
 
 		# cross-tabulation of study_arm and Phenotype
@@ -251,7 +251,8 @@ def main():
 						st.bar_chart(hist_values, )
 
 		# Sample Submitter
-		Submitter = st.text_input('Sample Submitter - First name initial + ". " + last name" (e.g.- H. Morris)')
+        st.subheader('Sample Submitter')
+		Submitter = st.text_input('First name initial + ". (dot&space)" + last name" (e.g.- H. Morris)')
 		df['Submitter'] = Submitter
 
 		if st.button("Finished?"):
