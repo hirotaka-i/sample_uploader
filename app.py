@@ -69,7 +69,7 @@ def main():
 			df['Submitter'] = Submitter
 
 			# study_arm --> Phenotype
-			st.text('Counts by study_arm')
+			st.info('Counts by study_arm')
 			st.text(df.study_arm.value_counts())
 			arms=df.study_arm.dropna().unique()
 			n_arms = st.columns(len(arms))
@@ -79,7 +79,7 @@ def main():
 					arm = arms[i]
 					phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
-            
+
 			if st.button("Confirm Phenotype Allocation"):
 				# cross-tabulation of study_arm and Phenotype
 				st.text('=== Phenotype x study_arm===')
@@ -87,7 +87,7 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 			# race standardization
-			st.text('Counts by race')
+			st.info('Counts by race')
 			st.text(df.race.value_counts())
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
