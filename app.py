@@ -151,11 +151,11 @@ def main():
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
 		st.text(df.family_history.value_counts())
-		family_historys = df.family_history.dropna().unique().astype('str')
+		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
 		if nmiss>0:
 			st.text(f'{nmiss} entries missing family_history')
-			df['family_history_for_qc'] = df.family_history.astype('str').fillna('Not Reported')
+			df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
 		
 		mapdic = {'Not Reported':'Not Reported'}
 
