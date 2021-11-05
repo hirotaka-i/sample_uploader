@@ -26,6 +26,14 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 
+
+
+	ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
+	cols = st.beta_columns(ncol)
+
+	for i, x in enumerate(cols):
+		x.selectbox(f"Input # {i}",[1,2,3], key=i)
+		
 	if choice in menu[:2]:
 		st.subheader("Dataset")
 		data_file = st.file_uploader("Upload Sample Manifest (CSV/XLSX", type=['csv', 'xlsx'])
@@ -70,7 +78,7 @@ def main():
 				for arm in x1.study_arm:
 					if arm != 'Unknown':
 						n_arm = (x1.study_arm==arm).sum()
-						phenotypes[arm] = st.text_box(f'{arm}: N={n_arm}. Choose from Case/Control/Prodromal/Other')
+						phenotypes[arm] = 
 
 
 
