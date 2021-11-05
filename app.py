@@ -81,13 +81,13 @@ def main():
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
 			# race standardization
+			st.text('Counts by race')
+			st.text(df.race.value_counts(dropna=False))
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
 			if nmiss>0:
 				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-				df['race'] = df.fillna('Not Reported')
-			st.text('Counts by race')
-			st.text(df.race.value_counts())
+				df['race2'] = df.fillna('Not Reported')
 			
 			mapdic = {'Not Reported':'Not Reported'}
 			st.text(df.race.value_counts(dropna=False))
