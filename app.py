@@ -70,7 +70,7 @@ def main():
 				for arm in x1.study_arm:
 					if arm != 'Unknown':
 						n_arm = (x1.study_arm==arm).sum()
-						phenotype{arm} = st.text_input(f'{arm}: N={n_arm}. Choose from Case/Control/Prodromal/Other')
+						phenotypes[arm] = st.text_input(f'{arm}: N={n_arm}. Choose from Case/Control/Prodromal/Other')
 
 
 
