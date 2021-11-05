@@ -65,7 +65,7 @@ def main():
 				st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
 			# Sample Submitter
-			Submitter = st.text_input('Sample Submitter (First name Initial + Last name) (e.g.- H. Morris)')
+			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
 			df['Submitter'] = Submitter
 
 			# study_arm --> Phenotype
@@ -87,7 +87,7 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.text(xtab)
 			# race for qc
-			st.subheader('Counts by race')
+			st.subheader('Create "race_for_qc"')
 			st.text(df.race.value_counts())
 			races = df.race.dropna().unique()
 			nmiss = sum(pd.isna(df.race))
@@ -111,7 +111,7 @@ def main():
 				st.write(xtab)
 			
 			# family history for qc
-			st.info('Counts by family_history')
+			st.subheader('Create "family_history_for_qc"')
 			st.text(df.family_history.value_counts())
 			family_historys = df.family_history.dropna().unique()
 			nmiss = sum(pd.isna(df.family_history))
@@ -135,15 +135,15 @@ def main():
 				df['family_history'] = df.family_history.fillna('_Missing')
 				xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
-				st.text(xtab)
-
-			if st.button("Plate check"):
-				df['Plate_name'] = df.Plate_name.fillna('Missing')
-				xtab = df.pivot_table(index='Plate_name', 
-									columns='study_arm', margins=True,
-									values='sample_id', aggfunc='count', fill_value=0)
 				st.write(xtab)
-				
+
+            st.subheader('Plate Info')
+			df['Plate_name'] = df.Plate_name.fillna('Missing')
+			xtab = df.pivot_table(index='Plate_name', 
+								columns='study_arm', margins=True,
+								values='sample_id', aggfunc='count', fill_value=0)
+			st.write(xtab)
+			if st.button("Plate check"):
 				for plate in df.Plate_name.unique():
 					df_plate = df[df.Plate_name==plate].copy()
 					df_plate_pos = df_plate.Plate_position
