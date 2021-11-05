@@ -88,6 +88,23 @@ def main():
 									values='sample_id', aggfunc='count', fill_value=0)
 			st.text(xtab)
 
+		if st.button("Plate check"):
+			df['Plate_name'] = df.Plate_name.fillna('Not Provided')
+			for plate in df.Plate_name.unique():
+				df_plate = df[df.Plate_name==plate].copy()
+				df_plate_pos = df_plate.Plate_position
+				# duplicated position check
+				if plate!='Not Provided':
+					dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
+					if len(dup_pos)>0:
+						st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated - {dup_pos} on [{plate}]')
+					
+			xtab = df.pivot_table(index='Plate_name', 
+								columns='study_arm', margins=True,
+								values='sample_id', aggfunc='count', fill_value=0)
+		
+		
+		
 		
 		if st.button("Check2"):
 			st.write(df.head())
