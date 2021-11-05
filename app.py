@@ -27,7 +27,8 @@ def main():
 				if data_file.type == "text/csv":
 					df = pd.read_csv(data_file)
 				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-					df = pd.read_excel(data_file)
+					df = pd.read_excel(data_file, sheet_name=0)
+				
 				st.dataframe(df)
 
 	elif choice == menu[2]:
