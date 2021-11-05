@@ -78,7 +78,8 @@ def main():
 				for arm in x1.study_arm:
 					if arm != 'Unknown':
 						n_arm = (x1.study_arm==arm).sum()
-						phenotypes[arm] = 
+						phenotypes[arm] = n_arm
+				st.text(phenotypes)
 
 
 
