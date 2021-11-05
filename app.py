@@ -137,12 +137,14 @@ def main():
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.write(xtab)
 
-            st.subheader('Plate Info')
+			# Plate Info
+			st.subheader('Plate Info')
 			df['Plate_name'] = df.Plate_name.fillna('Missing')
 			xtab = df.pivot_table(index='Plate_name', 
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 			st.write(xtab)
+			
 			if st.button("Plate check"):
 				for plate in df.Plate_name.unique():
 					df_plate = df[df.Plate_name==plate].copy()
