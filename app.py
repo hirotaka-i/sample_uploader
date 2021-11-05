@@ -116,7 +116,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
 		
-		ph_conf = st.checkbox('Confirm?')
+		ph_conf = st.checkbox('Confirm Phenotype?')
 		if ph_conf:
 			st.info('Thank you')
 
@@ -143,7 +143,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 		
-		race_conf = st.checkbox('Confirm?')
+		race_conf = st.checkbox('Confirm race_for_qc?')
 		if race_conf:
 			st.info('Thank you')
 		
@@ -174,7 +174,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		fh_conf = st.checkbox('Confirm?')
+		fh_conf = st.checkbox('Confirm family_history_for_qc?')
 		if fh_conf:
 			st.info('Thank you')
 
