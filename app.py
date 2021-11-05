@@ -116,7 +116,9 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
 		
-		ph_conf = st.text_input('Input [P] to confirm the above assignemnts')
+		ph_conf = st.checkbox('Confirm?')
+        if ph_conf:
+            st.input('Thank you')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -141,7 +143,10 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 		
-		race_conf = st.text_input('Input [R] to confirm the above assignemnts')
+		race_conf = st.checkbox('Confirm?')
+        if race_conf:
+            st.input('Thank you')
+		
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
@@ -169,7 +174,9 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		fh_conf = st.text_input('Input [F] to confirm the above assignemnts')
+		fh_conf = st.checkbox('Confirm?')
+        if fh_conf:
+            st.input('Thank you')
 
 		# Plate Info
 		st.subheader('Plate Info')
@@ -228,7 +235,7 @@ def main():
 			st.text("If everything is good, you will see the download link for the qced data")
 			if not Submitter:
 				st.error('Have you input the submitter?')
-			elif not ((ph_conf=='P') & (race_conf=='R') & (fh_conf=='F')):
+			elif not (ph_conf & race_conf & fh_conf):
 				st.error('Forget to confirm?')
 			elif flag==1:
 				st.error('Please resolve all errors')
