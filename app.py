@@ -75,11 +75,11 @@ def main():
 					phenotypes[arm]=x.selectbox(f"[{arm}]: For QC, please pick the Phenotype below",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
 			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-            # cross-tabulation of study_arm and Phenotype
-            st.text('=== Phenotype x study_arm===')
-            xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
-                                    values='sample_id', aggfunc='count', fill_value=0)
-            st.text(xtab)
+			# cross-tabulation of study_arm and Phenotype
+			st.text('=== Phenotype x study_arm===')
+			xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
+									values='sample_id', aggfunc='count', fill_value=0)
+			st.text(xtab)
 
 
 			# race for qc
