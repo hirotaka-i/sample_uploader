@@ -101,7 +101,13 @@ def main():
 				["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 				"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"])
 			df['race_for_qc'] = df.race_for_qc.map(mapdic)
-
+			
+			if st.button("Confirm Race for QC"):
+				# cross-tabulation of study_arm and Phenotype
+				st.text('=== race_for_qc X race ===')
+				df['race'] = df.race.fillna('Missing')
+				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
+										values='sample_id', aggfunc='count', fill_value=0)
 			# family history for qc
 			st.info('Counts by family_history')
 			st.text(df.family_history.value_counts())
@@ -125,10 +131,11 @@ def main():
 				df['family_history'] = df.family_history.fillna('_Missing')
 				xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
+
 				st.text(xtab)
 
 			if st.button("Plate check"):
-				df['Plate_name'] = df.Plate_name.fillna('_Missing')
+				df['Plate_name'] = df.Plate_name.fillna('Missing')
 				xtab = df.pivot_table(index='Plate_name', 
 									columns='study_arm', margins=True,
 									values='sample_id', aggfunc='count', fill_value=0)
@@ -146,7 +153,7 @@ def main():
 							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
 				
 			if st.button('Age distribution check'):
-				
+				st.text('test')
 			
 			
 			if st.button("Check2"):
