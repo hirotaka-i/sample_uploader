@@ -159,7 +159,7 @@ def main():
 				if df.dtypes[v] not in ['float64', 'int64']:
 					st.error(f'{v} is not numeric')
 				else:
-					st.bar_chart(df[v])
+					st.pyplot.hist(df[v])
 				
 			if st.button('Age distribution check'):
 				st.text('test')
