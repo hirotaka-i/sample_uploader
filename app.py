@@ -42,7 +42,7 @@ def main():
 	flag=0
 	ph_conf=''
 	sex_conf=''
-	race_conf=''
+		=''
 	fh_conf=''
 	cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
@@ -116,7 +116,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
 		
-		ph_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+		ph_conf = st.text_input('Input [P] to confirm the above assignemnts')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -141,7 +141,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 		
-		race_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+			 = st.text_input('Input [R] to confirm the above assignemnts')
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
@@ -169,7 +169,7 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		fh_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+		fh_conf = st.text_input('Input [F] to confirm the above assignemnts')
 
 		# Plate Info
 		st.subheader('Plate Info')
@@ -228,7 +228,7 @@ def main():
 			st.text("If everything is good, you will see the download link for the qced data")
 			if not Submitter:
 				st.error('Have you input the submitter?')
-			elif ph_conf==race_conf==sex_conf==fh_conf=='Y':
+			elif ph_conf==	==sex_conf==fh_conf=='Y':
 				st.error('Forget to confirm?')
 			elif flag==1:
 				st.error('Please resolve all errors')
