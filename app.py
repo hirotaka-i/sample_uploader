@@ -31,14 +31,9 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
-		# Sample Submitter
-		Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
-		df['Submitter'] = Submitter
-
 		st.header("Data Check and self-QC")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
-			
 			# for debug purpose. get the file detail
 			# file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 			# st.write(file_details)
@@ -172,6 +167,11 @@ def main():
 			
 			if st.button("Check2"):
 				st.write(df.head())
+
+			# Sample Submitter
+			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
+			df['Submitter'] = Submitter
+
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
