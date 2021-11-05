@@ -31,6 +31,10 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	if choice in menu[:2]:
+		# Sample Submitter
+		Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
+		df['Submitter'] = Submitter
+
 		st.header("Data Check and self-QC")
 		data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX)", type=['csv', 'xlsx'])
 		if data_file is not None:
@@ -63,10 +67,6 @@ def main():
 				st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
 				st.text(f'N of sample_id (entries):{df.shape[0]}')
 				st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
-
-			# Sample Submitter
-			Submitter = st.text_input('Sample Submitter - First name initial + last name (e.g.- H. Morris)')
-			df['Submitter'] = Submitter
 
 			# study_arm --> Phenotype
 			st.subheader('Counts by study_arm')
@@ -139,7 +139,7 @@ def main():
 
 			# Plate Info
 			st.subheader('Plate Info')
-			df['Plate_name'] = df.Plate_name.fillna('Missing')
+			df['Plate_name'] = df.Plate_name.fillna('_Missing')
 			xtab = df.pivot_table(index='Plate_name', 
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
@@ -156,6 +156,16 @@ def main():
 						dup_pos = df_plate_pos[df_plate_pos.duplicated()].unique()
 						if len(dup_pos)>0:
 							st.error(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated\nposition {dup_pos} on plate [{plate}]')
+
+			# Numeric values
+			st.subheader('Numeric Values')
+			numerics_cols = ['DNA_volume', 'DNA_conc', 'r260_280','age', 'age_of_onset', 'age_at_diagnosis']
+			for v in numerics_cols:
+                vals = df.dtypes[v]
+				if vals not in ['float64', 'int64']:
+					st.error(f'{v} is not numeric')
+				else:
+					st.bar_chart(vals)
 				
 			if st.button('Age distribution check'):
 				st.text('test')
