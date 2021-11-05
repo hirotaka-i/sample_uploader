@@ -68,8 +68,6 @@ def main():
 		
 		# read a file
 		df = read_file(data_file)
-		
-		st.text(f'Required: {required_cols}')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
 			st.text(f'Required for Fulgent: {fulgent_cols}')
@@ -81,14 +79,14 @@ def main():
 		if len(missing_cols)>0:
 			st.error(f'{missing_cols} are missing. Please use the template sheet')
 			flag=1
-
+		
 		# required columns checks
 		elif df_non_miss_check.isna().sum().sum()>0:
 			st.error('There are some missing entries in the required columns. Please fill the missing cells ')
 			st.text('First ~30 columns with missing data in any required fields')
 			st.write(df_non_miss_check[df_non_miss_check.isna().sum(1)>0].head(20))
 			flag=1
-
+		
 		# sample dup check
 		elif len(sample_id_dup)>0:
 			sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
@@ -119,7 +117,7 @@ def main():
 		st.text(xtab)
 		if st.button("Confirm?"):
 			st.info('Thank you!')
-			confm+=1
+			ph_conf=1
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -143,7 +141,9 @@ def main():
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
-
+		if st.button("Confirm?"):
+			st.info('Thank you!')
+			race_conf=1
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
@@ -163,7 +163,7 @@ def main():
 					fh = family_historys[i]
 					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
 		df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
-		
+
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== family_history_for_qc X family_history ===')
 		df['family_history'] = df.family_history.astype('str').fillna('_Missing')
@@ -171,6 +171,10 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
+		if st.button("Confirm?"):
+			st.info('Thank you!')
+			fh_conf=1
+			
 		# Plate Info
 		st.subheader('Plate Info')
 		df['Plate_name'] = df.Plate_name.astype('str').fillna('_Missing')
@@ -229,6 +233,8 @@ def main():
 				st.error('Have you input the submitter?')
 			elif flag==0:
 				st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+			elif (ph_conf + race_conf + sex_conf + fh_conf)>0:
+				st.error('Forget to confirm?')
 			else:
 				st.error('Please resolve all errors')
 
