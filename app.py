@@ -99,6 +99,7 @@ def main():
 			# 		"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
 			for i, x in enumerate(races):
 				with x:
+					race = races[i]
 					mapdic[race]=st.selectbox(f"Select the best match for [{race}]",
 					["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
