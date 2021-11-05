@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import base64
 import datetime as dt
-
 # import matplotlib.pyplot as plt # don't work...
 
 cols = ['study', 'sample_id', 'sample_type',
@@ -60,7 +59,8 @@ def main():
 
 	st.title("GP2 sample manifest checker")
 	st.text('This is a web app to self-check the sample manifest')
-	st.text('The template download from https://docs.google.com/spreadsheets/d/1ThpUVBCRaPdDSiQiKZVwFpwWbW8mZxhqurv7-jBPrM4')
+	st.text('The template download from the below link')
+	st.write('https://docs.google.com/spreadsheets/d/1ThpUVBCRaPdDSiQiKZVwFpwWbW8mZxhqurv7-jBPrM4')
 	st.text('In the above link, go to "File"> "Download" (as xlsx/csv) ')
 	if data_file is not None:
 		st.header("Data Check and self-QC")
