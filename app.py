@@ -4,6 +4,7 @@ import streamlit.components.v1 as stc
 # File Processing Pkgs
 import pandas as pd
 import numpy as np
+import base64
 # import matplotlib.pyplot as plt # don't work...
 
 cols = ['study', 'sample_id', 'sample_type',
