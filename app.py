@@ -102,6 +102,7 @@ def main():
 			xtab = df.pivot_table(index='Plate_name', 
 								columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
+			st.write(xtab)
 		
 		
 		
