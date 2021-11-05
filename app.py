@@ -24,11 +24,11 @@ def main():
 			if data_file is not None:
 				file_details = {"Filename":data_file.name,"FileType":data_file.type,"FileSize":data_file.size}
 				st.write(file_details)
-                if data_file.type == "text/csv":
-                    df = pd.read_csv(data_file)
-                elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                    df = pd.read_excel(data_file)
-                st.dataframe(df)
+				if data_file.type == "text/csv":
+					df = pd.read_csv(data_file)
+				elif data_file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+					df = pd.read_excel(data_file)
+				st.dataframe(df)
 
 	elif choice == menu[2]:
 		st.subheader("Dataset")
@@ -53,11 +53,11 @@ def main():
 				# 	# st.write(raw_text)
 				# 	try:
 				# 		with pdfplumber.open(sm_file) as pdf:
-				# 		    page = pdf.pages[0]
-				# 		    st.write(page.extract_text())
+				# 			page = pdf.pages[0]
+				# 			st.write(page.extract_text())
 				# 	except:
 				# 		st.write("None")
-					    
+						
 					
 				# elif sm_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
 				# # Use the right file processor ( Docx,Docx2Text,etc)
