@@ -105,7 +105,7 @@ def main():
 			if st.button("Confirm Race for QC"):
 				# cross-tabulation of study_arm and Phenotype
 				st.text('=== race_for_qc X race ===')
-				df['race'] = df.race.fillna('Missing')
+				df['race'] = df.race.fillna('_Missing')
 				xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 										values='sample_id', aggfunc='count', fill_value=0)
 				st.write(xtab)
@@ -125,7 +125,7 @@ def main():
 				n_fhs = st.columns(len(family_historys))
 				for i, x in enumerate(n_fhs):
 					with x:
-						fh = n_fhs[i]
+						fh = family_historys[i]
 						mapdic[fh]=x.selectbox(f'[{fh}]: For QC, we only need "Yes", "No"',['Yes', 'No', 'Not Reported'], key=i)
 			df['family_history_for_qc'] = df.family_history_for_qc.map(phenotypes)
 
