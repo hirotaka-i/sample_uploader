@@ -82,19 +82,25 @@ def main():
 
 			# race standardization
 			st.text('Counts by race')
-            nmiss = pd.isna(df.race).sum()
-            if nmiss>0:
-                st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
-            race_miss = 
+			races = df.race.unique().dropna()
+			nmiss = sum(pd.isna(df.race))
+			if nmiss>0:
+				st.text(f'{nmiss} missing entries are recoded as "Not Reported"')
+				df['race'] = df.fillna('Not Reported')
+			
+			st.text(df.race.value_counts())
+			
+			mapdic = {'Not Reported':'Not Reported'}
 			st.text(df.race.value_counts(dropna=False))
-			races=df.race.dropna().unique()
-			n_arms = st.columns(len(arms))
-			phenotypes={}
-			for i, x in enumerate(n_arms):
+			n_races = st.columns(len(races))
+
+			for i, x in enumerate(n_races):
 				with x:
-					arm = arms[i]
-					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
-			df['Phenotype'] = df.study_arm.map(phenotypes)
+					race = races[i]
+					mapdic[arm]=x.selectbox(f"Select the most match for [{race}]",
+					[["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
+					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
+			df['race'] = df.race.map(mapdic)
 
 		if st.button("Confirm Phenotype Allocation"):
 			# cross-tabulation of study_arm and Phenotype
