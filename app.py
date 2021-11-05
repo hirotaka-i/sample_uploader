@@ -42,7 +42,7 @@ def main():
 	flag=0
 	ph_conf=''
 	sex_conf=''
-	race_conf = st.text_input('Input [R] to confirm the above assignemnts')	=''
+	race_conf = ''
 	fh_conf=''
 	cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
