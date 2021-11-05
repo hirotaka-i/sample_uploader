@@ -51,7 +51,7 @@ def main():
 			# required columns checks
 			elif df_non_miss_check.isna().sum().sum()>0:
 				st.error('There are some missing entries in the required columns.\nPlease fill the missing cells ')
-				st.write(df_non_miss_check.head())
+				st.write(df_non_miss_check[df_non_miss_check.isna()>0].head())
 
 			# sample dup check
 			elif len(sample_id_dup)>0:
