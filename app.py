@@ -88,7 +88,7 @@ def main():
 
 		
 		if st.button("Check2"):
-			st.text(df.head())
+			st.write(df.head())
 
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
