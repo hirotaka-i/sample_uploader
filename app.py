@@ -40,10 +40,10 @@ def main():
 	menu = ["For Fulgent", "For NIH (on plate)","For NIH (not on plate)","About"]
 	choice = st.sidebar.selectbox("Menu",menu)
 	flag=0
-	ph_conf=0
-	sex_conf=0
-	race_conf=0
-	fh_conf=0
+	ph_conf=''
+	sex_conf=''
+	race_conf=''
+	fh_conf=''
 	cols = ['study', 'sample_id', 'sample_type',
 		'DNA_volume', 'DNA_conc', 'r260_280',
 		'Plate_name', 'Plate_position', 'clinical_id', 
@@ -115,9 +115,7 @@ def main():
 		xtab = df.pivot_table(index='Phenotype', columns='study_arm', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.text(xtab)
-		if st.button("Confirm Phenotype?"):
-			st.info('Thank you!')
-			ph_conf=1
+        ph_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
@@ -141,9 +139,7 @@ def main():
 		xtab = df.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
-		if st.button("Confirm race_for_qc?"):
-			st.info('Thank you!')
-			race_conf=1
+        race_conf = st.text_input('Input [Y] to confirm the above assignemnts')
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
@@ -171,10 +167,8 @@ def main():
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
-		if st.button("Confirm family_history_for_qc?"):
-			st.info('Thank you!')
-			fh_conf=1
-			
+        fh_conf = st.text_input('Input [Y] to confirm the above assignemnts')
+
 		# Plate Info
 		st.subheader('Plate Info')
 		df['Plate_name'] = df.Plate_name.astype('str').fillna('_Missing')
@@ -230,10 +224,9 @@ def main():
 
 		if st.button("Finished?"):
 			st.text("If everything is good, you will see the download link for the qced data")
-			st.text((ph_conf + race_conf + sex_conf + fh_conf))
 			if not Submitter:
 				st.error('Have you input the submitter?')
-			elif (ph_conf + race_conf + sex_conf + fh_conf)<4:
+			elif ph_conf==race_conf==sex_conf==fh_conf=='Y':
 				st.error('Forget to confirm?')
 			elif flag==1:
 				st.error('Please resolve all errors')
