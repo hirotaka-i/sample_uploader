@@ -89,17 +89,17 @@ def main():
 			st.text('Counts by race')
 			st.text(df.race.value_counts())
 			
-			# mapdic = {'Not Reported':'Not Reported'}
-			# st.text(df.race.value_counts(dropna=False))
-			# n_races = st.columns(len(races))
+			mapdic = {'Not Reported':'Not Reported'}
+			st.text(df.race.value_counts(dropna=False))
+			n_races = st.columns(len(races))
 
-			# for i, x in enumerate(n_races):
-			# 	with x:
-			# 		race = races[i]
-			# 		mapdic[arm]=x.selectbox(f"Select the most match for [{race}]",
-			# 		[["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
-			# 		"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
-			# df['race'] = df.race.map(mapdic)
+			for i, x in enumerate(n_races):
+				with x:
+					race = races[i]
+					mapdic[arm]=x.selectbox(f"Select the most match for [{race}]",
+					[["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
+					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"]], key=i)
+			df['race'] = df.race.map(mapdic)
 
 			if st.button("Confirm Phenotype Allocation"):
 				# cross-tabulation of study_arm and Phenotype
