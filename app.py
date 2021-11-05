@@ -89,7 +89,7 @@ def main():
 			st.text(xtab)
 
 		if st.button("Plate check"):
-            st.info('Please make sure, the samples on each plate are =<96')
+			st.info('Please make sure, the samples on each plate are =<96')
 			df['Plate_name'] = df.Plate_name.fillna('Not Provided')
 			for plate in df.Plate_name.unique():
 				df_plate = df[df.Plate_name==plate].copy()
