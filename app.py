@@ -64,7 +64,7 @@ def main():
 				st.text(f'N of sample_id (entries):{df.shape[0]}')
 				st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
-			# study_arm
+			# study_arm --> Phenotype
 			st.text('Counts by study_arm')
 			st.text(df.study_arm.value_counts())
 			arms=df.study_arm.dropna().unique()
@@ -74,11 +74,13 @@ def main():
 				with x:
 					arm = arms[i]
 					phenotypes[arm]=x.selectbox(f"Allocate phenotype for [{arm}]",["PD", "Control", "Prodromal", "Other", "Not Reported"], key=i)
+			df['Phenotype'] = df.study_arm.map(phenotypes)
 
-
+			# Sample Submitter
+			Submitter = st.text_input('Sample Submitter (First name Initial + Last name) (e.g.- H. Morris)')
+			df['Submitter'] = Submitter
 
 		if st.button("Confirm Phenotype Allocation"):
-			st.text(phenotypes)
 			# cross-tabulation of study_arm and Phenotype
 			print('\n=== study_arm X Phenotype ===')
 			df['Phenotype'] = df.study_arm.map(phenotypes)
