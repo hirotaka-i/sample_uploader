@@ -71,8 +71,6 @@ def main():
 				n_phenotypes = st.columns(len(phenotypes))
 				for i, x in enumerate(n_phenotypes):
 					x.selectbox(f"Phenotype of {x}",['PD', 'Control', 'Prodromal', 'Other', 'Unknown'], key=i)
-				st.text(x)
-
 
 	# ncol = st.sidebar.number_input("Number of dynamic columns", 0, 20, 1)
 	# cols = st.columns(ncol)
