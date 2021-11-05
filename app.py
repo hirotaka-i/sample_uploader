@@ -169,7 +169,7 @@ def main():
 
 		# cross-tabulation of study_arm and Phenotype
 		st.text('=== family_history_for_qc X family_history ===')
-		df['family_history'] = df.family_history.astype('str').fillna('_Missing')
+		df['family_history'] = df.family_history.fillna('_Missing')
 		xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
