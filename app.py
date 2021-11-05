@@ -97,7 +97,7 @@ def main():
 					mapdic[race]=x.selectbox(f"Select the best match for [{race}]",
 					["American Indian or Alaska Native", "Asian", "White", "Black or African American", 
 					"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown"], key=i)
-			df['race2'] = df.race.map(mapdic)
+			df['race2'] = df.race2.map(mapdic)
 
 			if st.button("Confirm Phenotype Allocation"):
 				# cross-tabulation of study_arm and Phenotype
