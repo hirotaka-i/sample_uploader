@@ -159,7 +159,7 @@ def main():
 			"Multi-racial", "Native Hawaiian or Other Pacific Islander", "Other", "Unknown", "Not Reported"])
 		df['race_for_qc'] = df.race_for_qc.map(mapdic)
 		
-		# cross-tabulation of study_arm and Phenotype
+		# cross-tabulation
 		st.text('=== race_for_qc X race ===')
 		dft = df.copy()
 		dft['race'] = dft.race.fillna('_Missing')
@@ -191,7 +191,7 @@ def main():
 					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, any family history?',['Yes', 'No', 'Not Reported'], key=i)
 		df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
 
-		# cross-tabulation of study_arm and Phenotype
+		# cross-tabulation 
 		st.text('=== family_history_for_qc X family_history ===')
 		dft = df.copy()
 		dft['family_history'] = dft.family_history.fillna('_Missing')
@@ -202,6 +202,44 @@ def main():
 		fh_conf = st.checkbox('Confirm family_history_for_qc?')
 		if fh_conf:
 			st.info('Thank you')
+
+
+		# region for qc
+		st.subheader('Create "region_for_qc"')
+		st.text(df.region.value_counts())
+		regions = df.region.dropna().unique()
+		nmiss = sum(pd.isna(df.region))
+		if nmiss>0:
+			st.text(f'{nmiss} entries missing for region')
+			df['region_for_qc'] = df.region.fillna('Not Reported')
+		
+		mapdic = {'Not Reported':'Not Reported'}
+
+		if len(regions)>0:
+            st.text('if ISO 3166-3 is available for the region, please provide')
+            st.write('https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3')
+			n_rgs = st.columns(len(regions))
+			for i, x in enumerate(n_rgs):
+				with x:
+					region = regions[i]
+    				mapdic[fh]=x.text_input(f'{region} in 3 LETTER or NA')
+		df['region_for_qc'] = df.region_for_qc.map(mapdic)
+
+		# cross-tabulation 
+		st.text('=== region_for_qc X region ===')
+		dft = df.copy()
+		dft['region'] = dft.region.fillna('_Missing')
+		xtab = df.pivot_table(index='region_for_qc', columns='region', margins=True,
+								values='sample_id', aggfunc='count', fill_value=0)
+		st.write(xtab)
+
+		rg_conf = st.checkbox('Confirm regino_for_qc?')
+		if rg_conf:
+			st.info('Thank you')
+
+
+
+
 
 		# Plate Info
 		st.subheader('Plate Info')
@@ -264,7 +302,7 @@ def main():
 				st.error('Some errors still exist (red comment). Please check the original data for missing etc')
 			elif not Submitter:
 				st.error('Have you input the submitter?')
-			elif not (ph_conf & sex_conf & race_conf & fh_conf):
+			elif not (ph_conf & sex_conf & race_conf & fh_conf & rg_conf):
 				st.error('Forget to confirm?')
 			else:
 				st.markdown(get_table_download_link(df), unsafe_allow_html=True)
