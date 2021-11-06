@@ -51,6 +51,11 @@ def main():
 		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
 	required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
+	allowed_samples=['Blood (EDTA)', 'Blood (ACD)', 'Blood', 'DNA', 
+					'DNA from blood', 'DNA from FFPE', 'RNA', 'Saliva', 
+					'Buccal Swab', 'T-25 Flasks (Amniotic)', 'FFPE Slide',
+					'FFPE Block', 'Fresh tissue', 'Frozen tissue', 
+					'Bone Marrow Aspirate', 'Whole BMA', 'CD3+ BMA', 'Other']
 	fulgent_cols = ['DNA_volume', 'DNA_conc', 'Plate_name', 'Plate_position']
 	data_file = st.sidebar.file_uploader("Upload Sample Manifest (CSV/XLSX) [Currently only CSV!]", type=['csv', 'xlsx'])
 	
@@ -101,6 +106,16 @@ def main():
 			st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
 			st.text(f'N of sample_id (entries):{df.shape[0]}')
 			st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
+
+		# sample type check
+		st.text('sample_type check'):
+		st.write(df.sample_type.value_counts())
+		not_allowed = np.setdiff1d(df.sample_type.unique(), allowed_samples)
+		if len(not_allowed)>0:
+			st.error('sample_type: {not_allowed} not allowed.')
+			st.text(f'allowed samples \n{'\n'.join(allowed_samples)}')
+
+
 
 		# study_arm --> Phenotype
 		st.subheader('Create "Phenotype"')
