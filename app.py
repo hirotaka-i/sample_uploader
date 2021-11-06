@@ -57,8 +57,9 @@ def main():
 
 	st.title("GP2 sample manifest self-QC web app")
 	st.text('This is a web app to self-check the sample manifest')
-	st.text('The template download from the below link and go to "File"> "Download" as xlsx/csv')
+	st.text('The template download from the below link (go to "File"> "Download" as xlsx/csv)')
 	st.write('https://docs.google.com/spreadsheets/d/1ThpUVBCRaPdDSiQiKZVwFpwWbW8mZxhqurv7-jBPrM4')
+	st.text('Please refer to the second tab (data dictionary) for instruction')
 	st.text('')
 	if data_file is not None:
 		st.header("Data Check and self-QC")
