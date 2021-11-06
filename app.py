@@ -108,7 +108,7 @@ def main():
 			st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
 		# sample type check
-		st.text('sample_type check'):
+		st.text('sample_type check')
 		st.write(df.sample_type.value_counts())
 		not_allowed = np.setdiff1d(df.sample_type.unique(), allowed_samples)
 		if len(not_allowed)>0:
