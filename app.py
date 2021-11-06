@@ -120,7 +120,7 @@ def main():
 
 		# study_arm --> Phenotype
 		st.subheader('Create "Phenotype"')
-        st.text('Count per study_arm')
+		st.text('Count per study_arm')
 		st.write(df.study_arm.value_counts())
 		arms=df.study_arm.dropna().unique()
 		n_arms = st.columns(len(arms))
@@ -144,7 +144,7 @@ def main():
 
 		# sex for qc
 		st.subheader('Create "sex_for_qc"')
-        st.text('Count per sex group')
+		st.text('Count per sex group')
 		st.write(df.sex.value_counts())
 		sexes=df.sex.dropna().unique()
 		n_sexes = st.columns(len(sexes))
@@ -168,7 +168,7 @@ def main():
 
 		# race for qc
 		st.subheader('Create "race_for_qc"')
-        st.text('Count per race (Not Reported = missing)')
+		st.text('Count per race (Not Reported = missing)')
 		st.write(df.race_for_qc.value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
@@ -199,7 +199,7 @@ def main():
 
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
-        st.text('Count per family_history category (Not Reported = missing)')
+		st.text('Count per family_history category (Not Reported = missing)')
 		st.write(df.family_history_for_qc.value_counts())
 		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
@@ -231,7 +231,7 @@ def main():
 
 		# region for qc
 		st.subheader('Create "region_for_qc"')
-        st.text('Count per region (Not Reported = missing)')
+		st.text('Count per region (Not Reported = missing)')
 		st.write(df.region_for_qc.value_counts())
 		regions = df.region.dropna().unique()
 		nmiss = sum(pd.isna(df.region))
