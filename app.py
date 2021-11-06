@@ -114,7 +114,7 @@ def main():
 		if len(not_allowed)>0:
 			st.error('sample_type: {not_allowed} not allowed.')
 			sample_list = '\n * '.join(allowed_samples)
-			st.text(f'Allowed sample list - \n{sample_list}')
+			st.text(f'Allowed sample list - \n * {sample_list}')
 
 
 
