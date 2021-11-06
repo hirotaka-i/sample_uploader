@@ -190,7 +190,7 @@ def main():
 		dft['race'] = dft.race.fillna('_Missing')
 		xtab = dft.pivot_table(index='race_for_qc', columns='race', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
-		st.write(xtab)
+		st.text(xtab)
 		
 		race_conf = st.checkbox('Confirm race_for_qc?')
 		if race_conf:
@@ -222,7 +222,7 @@ def main():
 		dft['family_history'] = dft.family_history.fillna('_Missing')
 		xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
-		st.write(xtab)
+		st.text(xtab)
 
 		fh_conf = st.checkbox('Confirm family_history_for_qc?')
 		if fh_conf:
@@ -256,7 +256,7 @@ def main():
 		dft['region'] = dft.region.fillna('_Missing')
 		xtab = dft.pivot_table(index='region_for_qc', columns='region', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
-		st.write(xtab)
+		st.text(xtab)
 
 		rg_conf = st.checkbox('Confirm regino_for_qc?')
 		if rg_conf:
@@ -273,7 +273,7 @@ def main():
 		xtab = dft.pivot_table(index='Plate_name', 
 							columns='study_arm', margins=True,
 							values='sample_id', aggfunc='count', fill_value=0)
-		st.write(xtab)
+		st.text(xtab)
 
 		for plate in dft.Plate_name.unique():
 			df_plate = dft[dft.Plate_name==plate].copy()
