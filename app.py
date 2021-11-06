@@ -113,7 +113,7 @@ def main():
 		not_allowed = np.setdiff1d(df.sample_type.unique(), allowed_samples)
 		if len(not_allowed)>0:
 			st.error('sample_type: {not_allowed} not allowed.')
-			sample_list = '\n'.join(allowed_samples)
+			sample_list = '\n * '.join(allowed_samples)
 			st.text(f'Allowed sample list - \n{sample_list}')
 
 
