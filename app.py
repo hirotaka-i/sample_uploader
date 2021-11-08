@@ -115,6 +115,7 @@ def main():
 			st.error(f'sample_type: {not_allowed} not allowed.')
 			sample_list = '\n * '.join(allowed_samples)
 			st.text(f'Allowed sample list - \n * {sample_list}')
+			flag=1
 
 
 
@@ -169,7 +170,7 @@ def main():
 		# race for qc
 		st.subheader('Create "race_for_qc"')
 		st.text('Count per race (Not Reported = missing)')
-		st.write(df.race_for_qc.value_counts())
+		st.write(df.race.value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
 
