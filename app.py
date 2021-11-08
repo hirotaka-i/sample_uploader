@@ -106,7 +106,7 @@ def main():
 
 		# sample type check
 		st.text('sample_type check')
-		st.write(df.sample_type.value_counts())
+		st.write(df.sample_type.str.astype('str').value_counts())
 		not_allowed = np.setdiff1d(df.sample_type.unique(), allowed_samples)
 		if len(not_allowed)>0:
 			st.error(f'sample_type: {not_allowed} not allowed.')
@@ -119,7 +119,7 @@ def main():
 		# study_arm --> Phenotype
 		st.subheader('Create "Phenotype"')
 		st.text('Count per study_arm')
-		st.write(df.study_arm.value_counts())
+		st.write(df.study_arm.str.astype('str').value_counts())
 		arms=df.study_arm.dropna().unique()
 		n_arms = st.columns(len(arms))
 		phenotypes={}
@@ -143,7 +143,7 @@ def main():
 		# sex for qc
 		st.subheader('Create "sex_for_qc"')
 		st.text('Count per sex group')
-		st.write(df.sex.value_counts())
+		st.write(df.sex.str.astype('str').value_counts())
 		sexes=df.sex.dropna().unique()
 		n_sexes = st.columns(len(sexes))
 		mapdic={}
@@ -168,7 +168,7 @@ def main():
 		st.subheader('Create "race_for_qc"')
 		st.text('Count per race (Not Reported = missing)')
 		df['race_for_qc'] = df.race.fillna('Not Reported')
-		st.write(df.race_for_qc.value_counts())
+		st.write(df.race_for_qc.str.astype('str').value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
 
@@ -200,7 +200,7 @@ def main():
 		st.subheader('Create "family_history_for_qc"')
 		st.text('Count per family_history category (Not Reported = missing)')
 		df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
-		st.write(df.family_history_for_qc.value_counts())
+		st.write(df.family_history_for_qc.str.astype('str').value_counts())
 		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
 
@@ -233,7 +233,7 @@ def main():
 		st.subheader('Create "region_for_qc"')
 		st.text('Count per region (Not Reported = missing)')
 		df['region_for_qc'] = df.region.fillna('Not Reported')
-		st.write(df.region_for_qc.value_counts())
+		st.write(df.region_for_qc.str.astype('str').value_counts())
 		regions = df.region.dropna().unique()
 		nmiss = sum(pd.isna(df.region))
 		if nmiss>0:
