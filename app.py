@@ -214,7 +214,7 @@ def main():
 				with x:
 					fh = family_historys[i]
 					mapdic[fh]=x.selectbox(f'[{fh}]: For QC, any family history?',['Yes', 'No', 'Not Reported'], key=i)
-		df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic)
+		df['family_history_for_qc'] = df.family_history_for_qc.map(mapdic).fillna('Not Assigned')
 
 		# cross-tabulation 
 		st.text('=== family_history_for_qc X family_history ===')
@@ -226,7 +226,10 @@ def main():
 
 		fh_conf = st.checkbox('Confirm family_history_for_qc?')
 		if fh_conf:
-			st.info('Thank you')
+			if sum(df.family_history_for_qc=='Not Assigned')>0:
+				st.error('Need to assigne all categories')
+			else:
+				st.info('Thank you')
 
 
 		# region for qc
