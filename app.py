@@ -74,9 +74,6 @@ def main():
 		
 		# read a file
 		df = read_file(data_file)
-		df['race_for_qc'] = df.race.fillna('Not Reported')
-		df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
-		df['region_for_qc'] = df.region.fillna('Not Reported')
 		df['Genotyping_site'] = choice.replace('For ', '')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
@@ -170,7 +167,8 @@ def main():
 		# race for qc
 		st.subheader('Create "race_for_qc"')
 		st.text('Count per race (Not Reported = missing)')
-		st.write(df.race.value_counts())
+		df['race_for_qc'] = df.race.fillna('Not Reported')
+		st.write(df.race_for_qc.value_counts())
 		races = df.race.dropna().unique()
 		nmiss = sum(pd.isna(df.race))
 
@@ -201,6 +199,7 @@ def main():
 		# family history for qc
 		st.subheader('Create "family_history_for_qc"')
 		st.text('Count per family_history category (Not Reported = missing)')
+		df['family_history_for_qc'] = df.family_history.fillna('Not Reported')
 		st.write(df.family_history_for_qc.value_counts())
 		family_historys = df.family_history.dropna().unique()
 		nmiss = sum(pd.isna(df.family_history))
@@ -233,6 +232,7 @@ def main():
 		# region for qc
 		st.subheader('Create "region_for_qc"')
 		st.text('Count per region (Not Reported = missing)')
+		df['region_for_qc'] = df.region.fillna('Not Reported')
 		st.write(df.region_for_qc.value_counts())
 		regions = df.region.dropna().unique()
 		nmiss = sum(pd.isna(df.region))
