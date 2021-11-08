@@ -220,16 +220,13 @@ def main():
 		st.text('=== family_history_for_qc X family_history ===')
 		dft = df.copy()
 		dft['family_history'] = dft.family_history.fillna('_Missing')
-		xtab = df.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
+		xtab = dft.pivot_table(index='family_history_for_qc', columns='family_history', margins=True,
 								values='sample_id', aggfunc='count', fill_value=0)
 		st.write(xtab)
 
 		fh_conf = st.checkbox('Confirm family_history_for_qc?')
 		if fh_conf:
-			if sum(df.family_history_for_qc=='Not Assigned')>0:
-				st.error('Need to assigne all categories')
-			else:
-				st.info('Thank you')
+			st.info('Thank you')
 
 
 		# region for qc
