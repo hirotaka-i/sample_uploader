@@ -261,7 +261,10 @@ def main():
 
 		rg_conf = st.checkbox('Confirm regino_for_qc?')
 		if rg_conf:
-			st.info('Thank you')
+			if len(region)!=(len(mapdic)-1):
+				st.error('region not assigned')
+			else:
+				st.info('Thank you')
 
 
 
