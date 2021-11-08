@@ -248,8 +248,9 @@ def main():
 			for i, x in enumerate(n_rgs):
 				with x:
 					region = regions[i]
-					if len(region)>1:
-						mapdic[region]=x.text_input(f'[{region}] in 3 LETTER (or NA)')
+					region_to_map = x.text_input(f'[{region}] in 3 LETTER (or NA)')
+					if len(region_to_map)>1:
+						mapdic[region]=region_to_map
 		df['region_for_qc'] = df.region_for_qc.map(mapdic)
 
 		# cross-tabulation 
