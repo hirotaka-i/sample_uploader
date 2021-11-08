@@ -265,6 +265,7 @@ def main():
 		if rg_conf:
 			if len(regions)!=(len(mapdic)-1):
 				st.error('region not assigned')
+				flag=1
 			else:
 				st.info('Thank you')
 
