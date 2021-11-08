@@ -251,7 +251,7 @@ def main():
 					region_to_map = x.text_input(f'[{region}] in 3 LETTER (or NA)')
 					if len(region_to_map)>1:
 						mapdic[region]=region_to_map
-		df['region_for_qc'] = df.region_for_qc.map(mapdic)
+		df['region_for_qc'] = df.region_for_qc.map(mapdic).fillna('Not Assigned')
 
 		# cross-tabulation 
 		st.text('=== region_for_qc X region ===')
