@@ -82,7 +82,7 @@ def main():
 		missing_cols = np.setdiff1d(cols, df.columns)
 		if len(missing_cols)>0:
 			st.error(f'{missing_cols} are missing. Please use the template sheet')
-			flag=1
+			return
 		
 		else:
 			df_non_miss_check = df[required_cols].copy()
