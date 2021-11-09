@@ -77,7 +77,6 @@ def main():
 		df['Genotyping_site'] = choice.replace('For ', '')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
-		sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 		
 		# missing col check
 		missing_cols = np.setdiff1d(cols, df.columns)
@@ -95,8 +94,11 @@ def main():
 			st.write(df_non_miss_check[df_non_miss_check.isna().sum(1)>0].head(20))
 			flag=1
 		
+		else:
+			sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
+		
 		# sample dup check
-		elif len(sample_id_dup)>0:
+		if len(sample_id_dup)>0:
 			sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 			st.text(f'Duplicated sample_id:{sample_id_dup}')
 			st.error(f'Unique sample IDs are required (clinical IDs can be duplicated if replicated)')
