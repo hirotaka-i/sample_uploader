@@ -85,6 +85,7 @@ def main():
 			return
 		
 		else:
+			st.text('Check column names--> OK')
 			df_non_miss_check = df[required_cols].copy()
 		
 		# required columns checks
@@ -95,6 +96,7 @@ def main():
 			flag=1
 		
 		else:
+			st.text('Check missing data in the required fields --> OK')
 			sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 		
 		# sample dup check
@@ -104,7 +106,7 @@ def main():
 			st.error(f'Unique sample IDs are required (clinical IDs can be duplicated if replicated)')
 			flag=1
 		else:
-			st.text(f'Column name OK, required columns are non-missing, no duplicaiton for sample_id')
+			st.text(f'Check sample_id duplicaiton --> OK')
 			st.text(f'N of sample_id (entries):{df.shape[0]}')
 			st.text(f'N of unique clinical_id : {len(df.clinical_id.unique())}')
 
