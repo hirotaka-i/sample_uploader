@@ -77,17 +77,19 @@ def main():
 		df['Genotyping_site'] = choice.replace('For ', '')
 		if choice=='For Fulgent':
 			required_cols = required_cols + fulgent_cols
-		df_non_miss_check = df[required_cols].copy()
 		sample_id_dup = df.sample_id[df.sample_id.duplicated()].unique()
 		
-		# missing check
+		# missing col check
 		missing_cols = np.setdiff1d(cols, df.columns)
 		if len(missing_cols)>0:
 			st.error(f'{missing_cols} are missing. Please use the template sheet')
 			flag=1
 		
+		else:
+			df_non_miss_check = df[required_cols].copy()
+		
 		# required columns checks
-		elif df_non_miss_check.isna().sum().sum()>0:
+		if df_non_miss_check.isna().sum().sum()>0:
 			st.error('There are some missing entries in the required columns. Please fill the missing cells ')
 			st.text('First ~30 columns with missing data in any required fields')
 			st.write(df_non_miss_check[df_non_miss_check.isna().sum(1)>0].head(20))
