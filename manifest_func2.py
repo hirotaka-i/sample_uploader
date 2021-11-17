@@ -19,7 +19,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
           'DNA_volume', 'DNA_conc', 'r260_280',
           'Plate_name', 'Plate_position', 'clinical_id', 
           'study_arm', 'sex', 'race', 
-          'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
+          'age', 'age_of_onset', 'age_at_diagnosis', 'age_at_death', 'family_history',
           'region', 'comment', 'alternative_id1', 'alternative_id2', 
           'Phenotype','Genotyping_site', 'Sample_submitter', 'original_manifest']
   qc_cols= ['sex_for_qc', 'race_for_qc', 'family_history_for_qc', 'region_for_qc']
@@ -42,6 +42,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
 
   # start
   flag=0
+  serious_error = 0
 
   # NAs
   print('N of original data entries:', data.shape[0])
@@ -67,7 +68,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
     if dup_not_allowed:
       print('If the duplications are fine, set option as dup_not_allowed=False')
       print('exit')
-      return
+      serious_error=1
     else: 
       print('"dup_not_allowed=False" option is active')
       print('!!DUPLICATIONS IGNORED!!')
@@ -76,7 +77,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
   if sum(pd.isna(x2.clinical_id))>0:
     print('\n!!!SERIOUS ERROR!!! \nPlease provide clinical ID for all entries with sample IDs')
     print('N of entries with clinical ID missing:', sum(pd.isna(x2.clinical_id)))
-    return
+    serious_error=1
   
   # set aside the original sex, race, region, family history and update origin_cols
   x2_origin = x2[origin_col].copy()
@@ -144,7 +145,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
     x2['family_history'] = x2.family_history.fillna('Not Reported')
     flag=1
   else:
-    print('\family history info: no missing')
+    print('\nfamily history info: no missing')
   fh_er = np.setdiff1d(x2.family_history.unique().astype('str'), ["Yes", "No", "Unknown", "Not Reported"])
   if len(fh_er)>0:
     print('Undefined value:', fh_er)
@@ -154,24 +155,30 @@ def checkSampleManifest(data, dup_not_allowed=True):
 
   # numeric parameter check
   print('\n')
-  for v in ['age', 'age_of_onset', 'age_at_diagnosis']:
+  for v in ['age', 'age_of_onset', 'age_at_diagnosis', 'age_at_death']:
     if x2.dtypes[v] not in ['float64', 'int64']:
-      print(v, 'is not numeric')
+      print(f'ERROR: {v} needs to be numeric (or missing)')
       flag=1
+    else:
+      v_vec = x2[v].dropna()
+      if len(v_vec)>0:
+        print(f'{v} : {len(v_vec)} non-missing obs, min={np.min(v_vec)}, mean={np.mean(v_vec)}, max={np.max(v_vec)}')
+      else:
+        print(f'{v} is all missing')
 
   # Other missing check
   x2_non_miss_check = x2[['sample_id', 'study', 'sample_type', 'region', 'Genotyping_site', 'Sample_submitter']].copy()
   if x2_non_miss_check.isna().sum().sum()>0:
     print('\n!!!SERIOUS ERROR!!! \nMissing not allowed for the following columns. Please fill and repeat this process again.')
     print(x2_non_miss_check.info())
-    return
+    serious_error=1
 
   # Genotyping_site check
   gs_er = np.setdiff1d(x2.Genotyping_site.unique().astype('str'), ['NIH', 'Fulgent'])
   if len(gs_er)>0:
     print('Undefined value:', fh_er)
     print('\n!!!SERIOUS ERROR!!! \nGenotyping_site is either NIH or Fulgent')
-    return
+    serious_error=1
 
   # If shipping to Fulgent, Box ID and Well position determined? 
   x2_fulgent_non_miss_check = x2.loc[x2.Genotyping_site=='Fulgent', 
@@ -180,7 +187,7 @@ def checkSampleManifest(data, dup_not_allowed=True):
   if x2_fulgent_non_miss_check.isna().sum().sum()>0:
     print('\n!!!SERIOUS ERROR!!! \nThese are samples to Fulgent.\nMissing not allowed for the following columns. Please fill and repeat this process again.')
     print(x2_fulgent_non_miss_check.info())
-    return
+    serious_error=1
 
   # Plate name, Position check
   print('\n==== Check N per plate/box (Usually less than 96) ====')
@@ -194,11 +201,15 @@ def checkSampleManifest(data, dup_not_allowed=True):
       dup_pos = x2_plate_pos[x2_plate_pos.duplicated()].unique()
       if len(dup_pos)>0:
         print(f'\n!!!SERIOUS ERROR!!! \nPlate position duplicated - {dup_pos} on [{plate}]')
-        return
+        serious_error = 1
   xtab = x2_plate_fillna.pivot_table(index='Plate_name', 
                       columns='Phenotype', margins=True,
                       values='sample_id', aggfunc='count', fill_value=0)
   print(xtab)
+
+  if serious_error==1:
+    print('please resolve errorss')
+    return
 
   # current values to qc_cols
   x2[qc_cols] = x2[origin_col].copy()
@@ -219,7 +230,13 @@ def checkSampleManifest(data, dup_not_allowed=True):
     data_qced['QC'] = 'PASS' # This column is required to provide giveGP2ID
     return (data_qced)
   
-
+# function to convert numeric if possible (to avoid the program to tell 3011.0 and 3011 are different)
+def convertNumeric(arr):
+  # If the object can be converted to be numeric, then convert to numeric
+  # If not, then keep the string.
+  arr1 = pd.to_numeric(arr, errors='coerce')
+  arr2 = np.where(pd.notna(arr1), arr1, arr)
+  return(arr2)
 
 ####################################################################################
 
@@ -231,6 +248,10 @@ def giveGP2ID(data, manifest_id):
   GP2ID - unique to clinicla_id
   GP2sampleID - unique to sample_id. 
       e.g. GP2ID_s1 = 1st sample. GP2ID_s2 = second sample and so on.
+  If consistent, it saves the file to qcing folder as:
+  {study_code}_sample_manifest_qced_{manifest_id}.csv
+  * study_code is derived from the first row of data. If a different output surfix needed, 
+  provide output_suffix and then {output_suffix}_sample_manifest_qced_{manifest_id}.csv
   """
   # check the data was QCed
   if "QC" not in data.columns:
@@ -238,110 +259,105 @@ def giveGP2ID(data, manifest_id):
     return
 
   # preparation
-  x1 = data.copy()
-  x1['manifest_id'] = manifest_id
+  allx2 = pd.DataFrame()
+  allx3 = pd.DataFrame()
+  d = data.copy()
+  d['manifest_id'] = manifest_id
+  d['clinical_id'] = convertNumeric(d.clinical_id)
   mnum = int(manifest_id.replace('m', ''))
-  study_code = data.study.values[0]
+  study_codes = d.study.unique()
+  if len(study_codes)>1:
+    print('MULTIPLE STUDIES ARE DETECTED\n\n')
   
+  for study_code in study_codes:
+    x1 = d[d.study==study_code].copy()
+    # summary
+    uids = x1.clinical_id.unique()
+    print(f'======== {study_code}_{manifest_id} =========')
+    print('N of samples:', x1.shape[0])
+    print('N of participants:', len(uids))
+
+    
+    # load previous manifest if available
+    x0 = pd.DataFrame()
+    if mnum > 1:
+      for mnum_i in range(1,mnum):
+        print(f'previous version - m{mnum_i}')
+        df_previous=pd.read_csv(f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/finalized/{study_code}_sample_manifest_qced_m{mnum_i}.csv')
+        df_previous['manifest_id']=f'm{mnum_i}'
+        df_previous['clinical_id']=convertNumeric(df_previous['clinical_id'])
+        x0 = x0.append(df_previous)
+          
+    # create mapping dictionary (mapid) of clinical id --> uid_idx
+    if len(x0)>0: ## retrieve previous mapping
+      uid_idx_previous = x0.GP2ID.str.split('_', expand=True).iloc[:,1].astype('int')
+      mapid = {clin:i for (clin,i) in zip(x0.clinical_id, uid_idx_previous)}
+      n=max(list(mapid.values()))+1 # uid_idx to use for new clinical_id
+
+      # update uids for the current data
+      uids_new = np.setdiff1d(uids, list(mapid.keys()))
+      print('N of new participants not in the previous manifests:', len(uids_new))
+      uids = uids_new # update
+
+    else:
+      n=1
+      mapid = {}
+    
+    # allocated uid_idx for new participants
+    for uid in uids:
+      mapid[uid]= n
+      n += 1
+
+    # map the sequencial number and create GP2IDs
+    x2 = pd.concat([x0,x1], ignore_index=True)
+    x2['uid_idx'] = x2.clinical_id.map(mapid)
+    x2['GP2ID'] = [f'{study_code}_{i:06}' for i in x2.uid_idx]
+
+    # unique sample ID for GP2sampleID
+    x2['uid_idx_cumcount'] = x2.groupby('GP2ID').cumcount() + 1
+    x2['GP2sampleID'] = x2.GP2ID + '_s' + x2.uid_idx_cumcount.astype('str')
+    x2['SampleRepNo'] = 's' + x2.uid_idx_cumcount.astype('str')
+    x2 = x2.reset_index(drop=True)
+
+
+    # Table for Sample Number values
+    x2['manifest'] = x2.study + '_' + x2.manifest_id
+    print('\n====================')
+    xtab = x2.pivot_table(index='manifest', columns='SampleRepNo', margins=True,
+                          values='GP2sampleID', aggfunc='count', fill_value=0)
+    print(xtab)
+
+    # Table for Phenotypes
+    print('\n====================')
+    xtab = x2.pivot_table(index='manifest', columns='Phenotype', margins=True,
+                          values='GP2sampleID', aggfunc='count', fill_value=0)
+    print(xtab)
+
+    # drop temporary variables
+    x2 = x2.drop(columns=['uid_idx', 'uid_idx_cumcount', 'manifest', 'QC'])
+    x3 = x2.loc[x2.manifest_id==manifest_id].copy().reset_index(drop=True)
+    
+
+    # Return the results
+    output_file = f'{study_code}_sample_manifest_qced_{manifest_id}.csv'
+    output_path = f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/qced/{output_file}'
+    print(f'\nSaved the GP2ID assigned table at [sample_manifest/qced] folder as: \n  * [{output_file}]\n')
+
+    x3.to_csv(output_path, index=False)
+
+    allx2 = allx2.append(x2)
+    allx3 = allx3.append(x3)
+
+  if len(study_codes)>1:
+    output_file = f'{("_").join(study_codes)}_sample_manifest_qced_{manifest_id}.csv'
+    output_path = f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/qced/{output_file}'
+    print(f'\nAdditionaly. saving the GP2ID assigned table of all samples from {("+").join(study_codes)} at [sample_manifest/qced] folder as: \n  * [{output_file}]')
+    allx3.to_csv(output_path, index=False)
   
-  # summary
-  uids = x1.clinical_id.unique()
-  print(f'{study_code}_{manifest_id}')
-  print('N of samples:', x1.shape[0])
-  print('N of participants:', len(uids))
-
-  
-  # load previous manifest if available
-  x0 = pd.DataFrame()
-  if mnum > 1:
-    for mnum_i in range(1,mnum):
-      print(f'previous version - m{mnum_i}')
-      df_previous=pd.read_csv(f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/finalized/{study_code}_sample_manifest_qced_m{mnum_i}.csv')
-      df_previous['manifest_id']=f'm{mnum_i}'
-      x0 = x0.append(df_previous)
-        
-  # create mapping dictionary (mapid) of clinical id --> uid_idx
-  if len(x0)>0: ## retrieve previous mapping
-    uid_idx_previous = x0.GP2ID.str.split('_', expand=True).iloc[:,1].astype('int')
-    mapid = {clin:i for (clin,i) in zip(x0.clinical_id, uid_idx_previous)}
-    n=max(list(mapid.values()))+1 # uid_idx to use for new clinical_id
-
-    # update uids for the current data
-    uids_new = np.setdiff1d(uids, list(mapid.keys()))
-    print('N of new participants not in the previous manifests:', len(uids_new))
-    uids = uids_new # update
-
-  else:
-    n=1
-    mapid = {}
-  
-  # allocated uid_idx for new participants
-  for uid in uids:
-    mapid[uid]= n
-    n += 1
-
-  # map the sequencial number and create GP2IDs
-  x2 = pd.concat([x0,x1], ignore_index=True)
-  x2['uid_idx'] = x2.clinical_id.map(mapid)
-  x2['GP2ID'] = [f'{study_code}_{i:06}' for i in x2.uid_idx]
-
-  # unique sample ID for GP2sampleID
-  x2['uid_idx_cumcount'] = x2.groupby('GP2ID').cumcount() + 1
-  x2['GP2sampleID'] = x2.GP2ID + '_s' + x2.uid_idx_cumcount.astype('str')
-  x2['SampleRepNo'] = 's' + x2.uid_idx_cumcount.astype('str')
-  x2 = x2.reset_index(drop=True)
-
-
-  # Table for Sample Number values
-  x2['manifest'] = x2.study + '_' + x2.manifest_id
-  print('\n====================')
-  xtab = x2.pivot_table(index='manifest', columns='SampleRepNo', margins=True,
-                        values='GP2sampleID', aggfunc='count', fill_value=0)
-  print(xtab)
-
-  # Table for Phenotypes
-  print('\n====================')
-  xtab = x2.pivot_table(index='manifest', columns='Phenotype', margins=True,
-                        values='GP2sampleID', aggfunc='count', fill_value=0)
-  print(xtab)
-
-  # Keep the necessary columns
-
-  # cols = ['study', 'sample_id', 'sample_type',
-  #         'DNA_volume', 'DNA_conc', 'r260_280',
-  #         'Plate_name', 'Plate_position', 'clinical_id', 
-  #         'study_arm', 'sex', 'race', 
-  #         'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
-  #         'region', 'comment', 'alternative_id1', 'alternative_id2', 
-  #         'manifest_id', 'Phenotype','Genotyping_site', 'Sample_submitter',
-  #         'GP2sampleID', 'GP2ID', 'original_manifest']
-
-
-  # drop temporary variables
-  x2 = x2.drop(columns=['uid_idx', 'uid_idx_cumcount', 'manifest', 'QC'])
-
-  x3 = x2.loc[x2.manifest_id==manifest_id].copy().reset_index(drop=True)
-  
-
-  # Return the results
-  output_file = f'{study_code}_sample_manifest_qced_{manifest_id}.csv'
-  output_path = f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/qced/{output_file}'
-  print(f'\n Saved the GP2ID assigned table at [sample_manifest/qced] folder as: \n  * [{output_file}]')
-
-  x3.to_csv(output_path, index=False)
-
-  print(f'The DataFrame including all samples from {study_code} is returned for further checking')
-  return x2
+  print(f'The DataFrame of all samples from {("+").join(study_codes)} including those from the previous manifests is returned for further checking')
+  return allx2
 
 ##################################################################################################################
-
-# function to convert numeric if possible (to avoid the program to tell 3011.0 and 3011 are different)
-def convertNumeric(arr):
-  # If the object can be converted to be numeric, then convert to numeric
-  # If not, then keep the string.
-  arr1 = pd.to_numeric(arr, errors='coerce')
-  arr2 = np.where(pd.notna(arr1), arr1, arr)
-  return(arr2)
 
 def compare_consistency(target, reference, 
                         cols_to_compare=['study', 'sample_id', 'clinical_id', 
@@ -377,7 +393,7 @@ def compare_consistency(target, reference,
 
     # create version
     today = dt.datetime.today()
-    version = f'{today.year}{today.month}{today.day}'
+    version = f'{today.year:04d}{today.month:02d}{today.day:02d}'
     filepath=f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/master_sheet/GP2sampleID_{version}.csv'
     print(f'The table was saved as\n  {filepath}')
     target.to_csv(filepath, index=False)

@@ -16,7 +16,7 @@ df = data.frame(
   clinical_id = paste0('MED', sample(1:100000, size = nr, replace = T)),
   study_arm = sample(c('Disease', 'Healthy'), nr, replace=T),
   sex = sample(c(1,2), nr, replace = T),
-  race = sample(c(1,2,3,4,5, NA_integer_), nr, replace = T), 
+  race = sample(c(1,2,3, NA_integer_), nr, replace = T), 
   age = rnorm(nr, 68, 5),
   age_at_onset = NA_integer_)
 df$age_at_diagnosis = df$age - runif(nr, 0.2, 8)
@@ -27,4 +27,4 @@ df$comment = NA
 df$alternative_id1=NA
 df$alternative_id2=NA
 
-write.csv(df, 'Document/PDSTUDY_sample_manifest.csv', col.names = F)
+write.csv(df, 'Downloads/PDSTUDY_sample_manifest.csv', col.names = F)
