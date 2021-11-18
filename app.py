@@ -48,7 +48,7 @@ def main():
 		'DNA_volume', 'DNA_conc', 'r260_280',
 		'Plate_name', 'Plate_position', 'clinical_id', 
 		'study_arm', 'sex', 'race', 
-		'age', 'age_of_onset', 'age_at_diagnosis', 'family_history',
+		'age', 'age_of_onset', 'age_at_diagnosis', 'age_at_death', 'family_history',
 		'region', 'comment', 'alternative_id1', 'alternative_id2']
 	required_cols = ['study', 'sample_id', 'sample_type', 'clinical_id','study_arm', 'sex']
 	allowed_samples=['Blood (EDTA)', 'Blood (ACD)', 'Blood', 'DNA', 
@@ -303,7 +303,7 @@ def main():
 
 		# Numeric values
 		st.subheader('Numeric Values')
-		numerics_cols = ['DNA_volume', 'DNA_conc', 'r260_280','age', 'age_of_onset', 'age_at_diagnosis']
+		numerics_cols = ['DNA_volume', 'DNA_conc', 'r260_280','age', 'age_of_onset', 'age_at_diagnosis', 'age_at_death']
 		flag3 = 0
 		for v in numerics_cols:
 			if df.dtypes[v] not in ['float64', 'int64']:
