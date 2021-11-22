@@ -240,7 +240,7 @@ def convertNumeric(arr):
 
 ####################################################################################
 
-def giveGP2ID(data, manifest_id):
+def giveGP2ID(data, manifest_id, list_non_finalized_mid = []):
   """
   This is a function to assign GP2ID to the data. 
   This will automatically read previous manifests of the study 
@@ -252,6 +252,8 @@ def giveGP2ID(data, manifest_id):
   {study_code}_sample_manifest_qced_{manifest_id}.csv
   * study_code is derived from the first row of data. If a different output surfix needed, 
   provide output_suffix and then {output_suffix}_sample_manifest_qced_{manifest_id}.csv
+  # Not yet finalized manifests can be provided as list of manifest_id
+  ## m1 and m2 are not finalized when doing qc for m3 --> list_non_finalized_mid = ['m1','m2']
   """
   # check the data was QCed
   if "QC" not in data.columns:
@@ -282,8 +284,14 @@ def giveGP2ID(data, manifest_id):
     x0 = pd.DataFrame()
     if mnum > 1:
       for mnum_i in range(1,mnum):
-        print(f'previous version - m{mnum_i}')
-        df_previous=pd.read_csv(f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/finalized/{study_code}_sample_manifest_qced_m{mnum_i}.csv')
+        if f'm{mnum_i}' in list_non_finalized_mid:
+          df_previous=pd.read_csv(f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/qced/{study_code}_sample_manifest_qced_m{mnum_i}.csv')
+          print(f'previous version - m{mnum_i}: nrow = {df_previous.shape[0]} - !!Note the manifest not finalized - loaded from the "qced" folder')
+          
+        else:
+          df_previous=pd.read_csv(f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/finalized/{study_code}_sample_manifest_qced_m{mnum_i}.csv')
+          print(f'previous version - m{mnum_i}: nrow = {df_previous.shape[0]}')
+
         df_previous['manifest_id']=f'm{mnum_i}'
         df_previous['clinical_id']=convertNumeric(df_previous['clinical_id'])
         x0 = x0.append(df_previous)
@@ -394,7 +402,7 @@ def compare_consistency(target, reference,
     # create version
     today = dt.datetime.today()
     version = f'{today.year:04d}{today.month:02d}{today.day:02d}'
-    filepath=f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/master_sheet/GP2sampleID_{version}.csv'
+    filepath=f'/content/drive/Shared drives/GP2_data_repo/sample_manifest/master_sheet/GP2sampleID_{version}_draft.csv'
     print(f'The table was saved as\n  {filepath}')
     target.to_csv(filepath, index=False)
   else:
